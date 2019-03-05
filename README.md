@@ -84,6 +84,7 @@ tweaked very conveniently from the commandline.
 | "trace horizontal"      | Traces pixel colors from given coordinate to the right                                      |
 | "trace vertical"        | Traces pixel colors from given coordinate down                                              |
 | "trace bitmask"         | Traces 1-bit bitmask, generated from pixels of given color vs. other colors                 |
+| "trace main color"      | Traces the most prominent pixel color in the given screen rectangle                         |
 | "trace mouse"           | Traces the coordinate of the current mouse position                                         |
 
 
@@ -154,6 +155,16 @@ pixloc --mode "trace vertical" --from 1,60 --range 100
 
 Outputs the RGB color values of pixels starting from the specified coordinate,
 iterating horizontally to the right or vertically down.
+
+
+#### Detecting most prominent color
+
+```bash
+pixloc --mode "trace main color" --from 10,10 --range 16,16
+```
+
+Outputs the RGB value of the most prominent color in the screen rectangle from 10,10 to 26,26.
+
 
 #### Using current mouse position as starting coordinate to scan from
 

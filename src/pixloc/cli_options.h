@@ -43,6 +43,7 @@ static const char *const kUsageExamples = "\nusage examples:"
     "\npixloc --mode \"trace horizontal\" --from 0,60 --range 100"
     "\npixloc --mode \"trace vertical\" --from 0,60 --range 100"
     "\npixloc --mode \"trace bitmask\" --from 0,60 --range 64,64 --color 188,188,188"
+    "\npixloc --mode \"trace main color\" --from 0,60 --range 64,64"
     "\npixloc --mode \"trace mouse\""
     "\npixloc --mode \"find color horizontal\" --from 0,60 --range 100 --color 188,188,188 --amount 8"
     "\npixloc --mode \"find color horizontal\" --from mouse --range 100 --color 188,188,188 --amount 8"
@@ -50,21 +51,23 @@ static const char *const kUsageExamples = "\nusage examples:"
     "\npixloc --mode \"find bitmask\" --from 0,60 --range 128,32 --color 188,188,188 --bitmask *__,**_,***,**_,*__"
     "\n\nsee https://github.com/kstenschke/pixloc for more detailed information\n\n";
 
-static const char *const kModeNameTraceMouse = "trace mouse";
-static const char *const kModeNameTraceHorizontal = "trace horizontal";
-static const char *const kModeNameTraceVertical = "trace vertical";
-static const char *const kModeNameTraceBitmask = "trace bitmask";
+static const char *const kModeNameFindBitmask = "find bitmask";
 static const char *const kModeNameFindConsecutiveHorizontal = "find color horizontal";
 static const char *const kModeNameFindConsecutiveVertical = "find color vertical";
-static const char *const kModeNameFindBitmask = "find bitmask";
+static const char *const kModeNameTraceBitmask = "trace bitmask";
+static const char *const kModeNameTraceHorizontal = "trace horizontal";
+static const char *const kModeNameTraceMainColor = "trace main color";
+static const char *const kModeNameTraceMouse = "trace mouse";
+static const char *const kModeNameTraceVertical = "trace vertical";
 
-static const int kModeIdTraceMouse = 1;
-static const int kModeIdTraceHorizontal = 2;
-static const int kModeIdTraceVertical = 3;
+static const int kModeIdFindBitmask = 1;
+static const int kModeIdFindConsecutiveHorizontal = 2;
+static const int kModeIdFindConsecutiveVertical = 3;
 static const int kModeIdTraceBitmask = 4;
-static const int kModeIdFindConsecutiveHorizontal = 5;
-static const int kModeIdFindConsecutiveVertical = 6;
-static const int kModeIdFindBitmask = 7;
+static const int kModeIdTraceHorizontal = 5;
+static const int kModeIdTraceMainColor = 6;
+static const int kModeIdTraceMouse = 7;
+static const int kModeIdTraceVertical = 8;
 
 int get_mode_id_from_name(const std::string &mode);
 

@@ -28,7 +28,7 @@
 */
 
 #include "pixel_scanner.h"
-#include "pixloc/helper/strings.h"
+#include "pixloc/helper/helper_strings.h"
 
 namespace pixloc {
 
@@ -36,10 +36,10 @@ namespace pixloc {
  * Constructor
  */
 PixelScanner::PixelScanner(Display *display,
-                         int x_start, int y_start,
-                         unsigned int range_x, unsigned int range_y,
-                         int find_red, int find_green, int find_blue,
-                         int tolerance) {
+                           int x_start, int y_start,
+                           unsigned int range_x, unsigned int range_y,
+                           int find_red, int find_green, int find_blue,
+                           int tolerance) {
   this->display = display;
 
   this->x_start = x_start;
@@ -93,6 +93,31 @@ int PixelScanner::ScanUniaxial(int amount_find, bool trace) {
   }
   XFree(image);
   return -1;
+}
+
+void PixelScanner::TraceMainColor() {
+  auto *color = new XColor;
+  int red, green, blue;
+
+  std::vector<std::string> colors;
+
+  for (int y = 0; y < range_y; y++) {
+    for (int x = 0; x < range_x; x++) {
+      color->pixel = XGetPixel(image, x, y);
+      XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
+
+      red = color->red/256;
+      green = color->green/256;
+      blue = color->blue/256;
+
+      char rgb[12];
+      sprintf(rgb, "%d,%d,%d", red, green, blue);
+      colors.emplace_back(rgb);
+    }
+  }
+  XFree(image);
+
+  helper::strings::TraceMostProminentItem(colors);
 }
 
 void PixelScanner::TraceBitmask() {
@@ -209,10 +234,10 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
 
 // Get line from bitmask haystack. this is lazy-loaded: initialize it via GetBitmaskLineFromImage if not yet
 void PixelScanner::FetchHaystackLine(std::vector<std::string> &haystack_lines,
-                                long &index_empy_haystack_line,
-                                unsigned long index_haystack_line,
-                                XColor *color,
-                                std::string &haystack_line) {
+                                     long &index_empy_haystack_line,
+                                     unsigned long index_haystack_line,
+                                     XColor *color,
+                                     std::string &haystack_line) {
   if (index_empy_haystack_line > index_haystack_line) {
     haystack_line = haystack_lines.at(index_haystack_line);
   } else {

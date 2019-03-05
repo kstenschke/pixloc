@@ -30,24 +30,25 @@
 #include <regex>
 
 #include "cli_options.h"
-#include "pixloc/helper/strings.h"
+#include "pixloc/helper/helper_strings.h"
 
 namespace pixloc {
 namespace clioptions {
 
 int get_mode_id_from_name(const std::string &mode) {
-  if (strcmp(mode.c_str(), kModeNameTraceMouse)==0) return kModeIdTraceMouse;
-  if (strcmp(mode.c_str(), kModeNameTraceHorizontal)==0) return kModeIdTraceHorizontal;
-  if (strcmp(mode.c_str(), kModeNameTraceVertical)==0) return kModeIdTraceVertical;
-  if (strcmp(mode.c_str(), kModeNameTraceBitmask)==0) return kModeIdTraceBitmask;
+  if (strcmp(mode.c_str(), kModeNameFindBitmask)==0) return kModeIdFindBitmask;
   if (strcmp(mode.c_str(), kModeNameFindConsecutiveHorizontal)==0) return kModeIdFindConsecutiveHorizontal;
   if (strcmp(mode.c_str(), kModeNameFindConsecutiveVertical)==0) return kModeIdFindConsecutiveVertical;
-  if (strcmp(mode.c_str(), kModeNameFindBitmask)==0) return kModeIdFindBitmask;
+  if (strcmp(mode.c_str(), kModeNameTraceBitmask)==0) return kModeIdTraceBitmask;
+  if (strcmp(mode.c_str(), kModeNameTraceHorizontal)==0) return kModeIdTraceHorizontal;
+  if (strcmp(mode.c_str(), kModeNameTraceMainColor)==0) return kModeIdTraceMainColor;
+  if (strcmp(mode.c_str(), kModeNameTraceMouse)==0) return kModeIdTraceMouse;
+  if (strcmp(mode.c_str(), kModeNameTraceVertical)==0) return kModeIdTraceVertical;
   return -1;
 }
 
 bool is_tupel_range_mode(int mode_id) {
-  return mode_id==kModeIdTraceBitmask || mode_id==kModeIdFindBitmask;
+  return mode_id==kModeIdTraceBitmask || mode_id==kModeIdFindBitmask || mode_id==kModeIdTraceMainColor;
 }
 
 bool is_horizontal_mode(int mode_id) {
@@ -72,11 +73,12 @@ bool mode_requires_bitmask(int mode_id) {
 
 bool mode_requires_color(int mode_id) {
   switch (mode_id) {
-    case kModeIdTraceBitmask:
+    case kModeIdFindBitmask:
     case kModeIdFindConsecutiveHorizontal:
     case kModeIdFindConsecutiveVertical:
-    case kModeIdFindBitmask:return true;
+    case kModeIdTraceBitmask:return true;
     case kModeIdTraceHorizontal:
+    case kModeIdTraceMainColor:
     case kModeIdTraceVertical:
     default:return false;
   }

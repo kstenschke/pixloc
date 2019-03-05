@@ -33,8 +33,9 @@
 #include <locale>
 #include <vector>
 #include <sstream>
+#include <iostream>
 
-#include "strings.h"
+#include "helper_strings.h"
 
 namespace helper {
 namespace strings {
@@ -81,6 +82,30 @@ int ToInt(std::string str, int defaultValue) {
   return strings::IsNumeric(str)
          ? std::stoi(str)
          : defaultValue;
+}
+
+void TraceMostProminentItem(std::vector<std::string> &items) {
+  unsigned long amount_items = items.size();
+  int max_count = 0;
+
+  for (unsigned long i = 0; i < amount_items; i++) {
+    int count = 1;
+    for (unsigned long j = i + 1; j < amount_items; j++) {
+      if (strcmp(items.at(i).c_str(), items.at(j).c_str())==0) count++;
+    }
+    if (count > max_count) max_count = count;
+  }
+
+  for (unsigned long i = 0; i < amount_items; i++) {
+    int count = 1;
+    for (unsigned long j = i + 1; j < amount_items; j++) {
+      if (strcmp(items.at(i).c_str(), items.at(j).c_str())==0) count++;
+    }
+    if (count==max_count) {
+      std::cout << items[i] << "\n";
+      break;
+    }
+  }
 }
 
 } // namespace strings

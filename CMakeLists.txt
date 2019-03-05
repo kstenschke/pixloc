@@ -19,7 +19,7 @@ include_directories(
 add_executable(pixloc
         src/pixloc/main.cc
         src/pixloc/cli_options.cc
-        src/pixloc/helper/strings.cc
+        src/pixloc/helper/helper_strings.cc
         src/pixloc/models/color_matcher_abstract.cc
         src/pixloc/models/color_matcher_precise.cc
         src/pixloc/models/color_matcher_range.cc

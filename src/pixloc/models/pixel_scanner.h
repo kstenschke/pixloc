@@ -56,6 +56,8 @@ class PixelScanner {
   // Scan pixels on x or y axis, trace or find
   int ScanUniaxial(int amount_find, bool trace);
 
+  void TraceMainColor();
+
   void TraceBitmask();
 
   std::string FindBitmask(const std::string &bitmask);

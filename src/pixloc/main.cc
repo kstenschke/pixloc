@@ -33,7 +33,7 @@
 #include <iostream>
 
 #include "external/clara.hpp"
-#include "pixloc/helper/strings.h"
+#include "pixloc/helper/helper_strings.h"
 #include "cli_options.h"
 #include "pixloc/models/pixel_scanner.h"
 
@@ -124,7 +124,6 @@ int main(int argc, char **argv) {
   if ((from_x==-1 || from_y==-1)
       || !pixloc::clioptions::resolve_scanning_range(mode_id, range, range_x, range_y))
     return print_error_and_usage_examples(parser, "Valid scanning range is required.");
-
   // @TODO validate from_x + range_x and from_y + range_y against available display dimension
 
   if (pixloc::clioptions::mode_requires_amount_px(mode_id) && (amount_px = helper::strings::ToInt(amount, 0))==0)
@@ -152,22 +151,24 @@ int main(int argc, char **argv) {
                                            static_cast<unsigned int>(range_x), static_cast<unsigned int>(range_y),
                                            red, green, blue, color_tolerance);
 
+  if (mode_id == pixloc::clioptions::kModeIdTraceMainColor) {
+    scanner->TraceMainColor();
+    return 0;
+  }
+
   if (is_bitmask_mode) {
     if (is_trace_mode) {
       scanner->TraceBitmask();
-
       return 0;
     }
 
     std::cout << scanner->FindBitmask(bitmask);
-
     return 0;
   }
 
   int location = scanner->ScanUniaxial(amount_px, is_trace_mode);
 
   if (!is_trace_mode) std::cout << location;
-
   return 0;
 }
 
