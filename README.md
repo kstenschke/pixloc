@@ -124,7 +124,14 @@ is found. The coordinate is output like ``x=320; y=210``, to make it easily [eva
 If the given pixel mask is not found, the output is ``x=-1; y=-1``.
 
 
-### Trick: Defining variables from found bitmask coordinate 
+#### Find a 1-bit pixel bitmask using a color range
+
+```bash
+pixloc -m "find bitmask" -f 1,60 -r 128,32 -c 188,188,188 -b *__,**_,***,**_,*__ -t 100
+```
+
+
+#### Trick: Defining variables from found bitmask coordinate 
 
 A found coordinate is output like for example:
    
