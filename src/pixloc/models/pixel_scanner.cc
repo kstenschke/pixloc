@@ -136,7 +136,7 @@ std::string PixelScanner::GetBitmaskLineFromImage(Display *display, XColor *colo
     XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
     bitmask_haystack += this->color_matcher->Matches(
-        color->red/256, color->green/256, color->blue/256)
+        color->red / 256, color->green / 256, color->blue / 256)
                         ? '*'
                         : '_';
   }
@@ -229,7 +229,7 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
     }
   }
 
-  return "-1";
+  return "x=-1; y=-1;";
 }
 
 // Get line from bitmask haystack. this is lazy-loaded: initialize it via GetBitmaskLineFromImage if not yet

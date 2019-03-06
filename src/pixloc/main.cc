@@ -109,9 +109,12 @@ int main(int argc, char **argv) {
     mouse_x = event.xbutton.x;
     mouse_y = event.xbutton.y;
 
-    if (mode_id==pixloc::clioptions::kModeIdTraceMouse) {
-      printf("%d,%d\n", event.xbutton.x, event.xbutton.y);
-      return 0;
+    if (mode_id==pixloc::clioptions::kModeIdTraceMouse ||
+        mode_id==pixloc::clioptions::kModeIdTraceMainColor ||
+        mode_id==pixloc::clioptions::kModeIdTraceBitmask
+    ) {
+      printf("x=%d; y=%d;\n", event.xbutton.x, event.xbutton.y);
+      if (mode_id==pixloc::clioptions::kModeIdTraceMouse) return 0;
     }
   }
 
@@ -139,12 +142,13 @@ int main(int argc, char **argv) {
                                           ? "Valid color to filter bitmask to find is required."
                                           : "Valid color to find is required.");
 
-  if (!tolerance.empty() && !helper::strings::IsNumeric(tolerance))
-    return print_error_and_usage_examples(parser, "Invalid color tolerance value given.");
+  if (!tolerance.empty()) {
+    if (!helper::strings::IsNumeric(tolerance)) return print_error_and_usage_examples(parser, "Invalid color tolerance value given.");
+    color_tolerance = helper::strings::ToInt(tolerance, 0);
+  }
 
   // Scan pixels
   bool is_trace_mode = pixloc::clioptions::is_trace_mode(mode_id);
-  if (is_trace_mode && use_mouse_for_from) std::cout << mouse_x << "," << mouse_y << "\n";
 
   auto *scanner = new pixloc::PixelScanner(display,
                                            from_x, from_y,
