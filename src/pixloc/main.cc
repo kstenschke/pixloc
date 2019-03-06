@@ -100,6 +100,8 @@ int main(int argc, char **argv) {
   if (mode.empty() || (mode_id = pixloc::clioptions::get_mode_id_from_name(mode))==-1)
     return print_error_and_usage_examples(parser, "Valid mode is required.");
 
+  bool is_trace_mode = pixloc::clioptions::is_trace_mode(mode_id);
+
   bool use_mouse_for_from = strcmp(from.c_str(), "mouse")==0;
   if (use_mouse_for_from || mode_id==pixloc::clioptions::kModeIdTraceMouse) {
     // Get current mouse position
@@ -112,10 +114,7 @@ int main(int argc, char **argv) {
     mouse_x = event.xbutton.x;
     mouse_y = event.xbutton.y;
 
-    if (mode_id==pixloc::clioptions::kModeIdTraceMouse ||
-        mode_id==pixloc::clioptions::kModeIdTraceMainColor ||
-        mode_id==pixloc::clioptions::kModeIdTraceBitmask
-    ) {
+    if (is_trace_mode) {
       printf("x=%d; y=%d;\n", event.xbutton.x, event.xbutton.y);
       if (mode_id==pixloc::clioptions::kModeIdTraceMouse) return 0;
     }
@@ -151,8 +150,6 @@ int main(int argc, char **argv) {
   }
 
   // Scan pixels
-  bool is_trace_mode = pixloc::clioptions::is_trace_mode(mode_id);
-
   auto *scanner = new pixloc::PixelScanner(display,
                                            from_x, from_y,
                                            static_cast<unsigned int>(range_x), static_cast<unsigned int>(range_y),

@@ -56,7 +56,11 @@ bool is_horizontal_mode(int mode_id) {
 }
 
 bool is_trace_mode(int mode_id) {
-  return mode_id==kModeIdTraceHorizontal || mode_id==kModeIdTraceVertical || mode_id==kModeIdTraceBitmask;
+  return mode_id==kModeIdTraceHorizontal ||
+         mode_id==kModeIdTraceVertical ||
+         mode_id==kModeIdTraceBitmask ||
+         mode_id==kModeIdTraceMainColor ||
+         mode_id==kModeIdTraceMouse;
 }
 
 bool is_bitmask_mode(int mode_id) {
