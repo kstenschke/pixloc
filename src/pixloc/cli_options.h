@@ -45,15 +45,15 @@ static const char *const kUsageExamples = "\nusage examples:"
     "\npixloc --mode \"trace bitmask\" --from 0,60 --range 64,64 --color 188,188,188"
     "\npixloc --mode \"trace main color\" --from 0,60 --range 64,64"
     "\npixloc --mode \"trace mouse\""
-    "\npixloc --mode \"find color horizontal\" --from 0,60 --range 100 --color 188,188,188 --amount 8"
-    "\npixloc --mode \"find color horizontal\" --from mouse --range 100 --color 188,188,188 --amount 8"
-    "\npixloc --mode \"find color vertical\" --from 0,60 --range 100 --color 188,188,188 --amount 8"
+    "\npixloc --mode \"find horizontal\" --from 0,60 --range 100 --color 188,188,188 --amount 8"
+    "\npixloc --mode \"find horizontal\" --from mouse --range 100 --color 188,188,188 --amount 8"
+    "\npixloc --mode \"find vertical\" --from 0,60 --range 100 --color 188,188,188 --amount 8"
     "\npixloc --mode \"find bitmask\" --from 0,60 --range 128,32 --color 188,188,188 --bitmask *__,**_,***,**_,*__"
     "\n\nsee https://github.com/kstenschke/pixloc for more detailed information\n\n";
 
 static const char *const kModeNameFindBitmask = "find bitmask";
-static const char *const kModeNameFindConsecutiveHorizontal = "find color horizontal";
-static const char *const kModeNameFindConsecutiveVertical = "find color vertical";
+static const char *const kModeNameFindConsecutiveHorizontal = "find horizontal";
+static const char *const kModeNameFindConsecutiveVertical = "find vertical";
 static const char *const kModeNameTraceBitmask = "trace bitmask";
 static const char *const kModeNameTraceHorizontal = "trace horizontal";
 static const char *const kModeNameTraceMainColor = "trace main color";

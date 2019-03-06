@@ -76,16 +76,16 @@ tweaked very conveniently from the commandline.
 
 ### Modes
 
-| Mode                    | Description                                                                                 |
-|-------------------------|---------------------------------------------------------------------------------------------|
-| "find color horizontal" | Locates given amount of consecutive pixels of given color, to the right of given coordinate |
-| "find color vertical"   | Locates given amount of consecutive pixels of given color, under given coordinate           |
-| "find bitmask"          | Locates given 1-bit bitmask within given screen rectangle, filtered by given color          |
-| "trace horizontal"      | Traces pixel colors from given coordinate to the right                                      |
-| "trace vertical"        | Traces pixel colors from given coordinate down                                              |
-| "trace bitmask"         | Traces 1-bit bitmask, generated from pixels of given color vs. other colors                 |
-| "trace main color"      | Traces the most prominent pixel color in the given screen rectangle                         |
-| "trace mouse"           | Traces the coordinate of the current mouse position                                         |
+| Mode               | Description                                                                                 |
+|--------------------|---------------------------------------------------------------------------------------------|
+| "find horizontal"  | Locates given amount of consecutive pixels of given color, to the right of given coordinate |
+| "find vertical"    | Locates given amount of consecutive pixels of given color, under given coordinate           |
+| "find bitmask"     | Locates given 1-bit bitmask within given screen rectangle, filtered by given color          |
+| "trace horizontal" | Traces pixel colors from given coordinate to the right                                      |
+| "trace vertical"   | Traces pixel colors from given coordinate down                                              |
+| "trace bitmask"    | Traces 1-bit bitmask, generated from pixels of given color vs. other colors                 |
+| "trace main color" | Traces the most prominent pixel color in the given screen rectangle                         |
+| "trace mouse"      | Traces the coordinate of the current mouse position                                         |
 
 
 ## Usage examples
@@ -95,13 +95,13 @@ tweaked very conveniently from the commandline.
 Useful for finding the highlighted component in a list of elements, e.g. a selected tab, list item, etc.
 
 ```bash
-pixloc --mode "find color horizontal" --from 1,60 --range 100 --color 188,188,188 --amount 8
+pixloc --mode "find horizontal" --from 1,60 --range 100 --color 188,188,188 --amount 8
 ```
 
 or 
 
 ```bash
-pixloc --mode "find color vertical" --from 1,60 --range 100 --color 188,188,188 --amount 8
+pixloc --mode "find vertical" --from 1,60 --range 100 --color 188,188,188 --amount 8
 ```
 
 Scans pixels starting from the specified coordinate, iterating on the x or y axis to the right or down, and outputs the 
