@@ -27,9 +27,9 @@ pixloc is implemented in C++ and depends only on X11.
 
 ## Why?
 
-pixloc's pixel recognition allows to easily and fast find screen coordinates of specific,
-currently displayed UI elements. Other programs can than be used to analyse and/or trigger user interaction
-(e.g. mouse clicks) onto the GUI of applications that otherwise lack an API for such interaction.
+pixloc's pixel recognition allows to easily and fast locate specific elements that are currently displayed on the screen.
+Other programs can than be used to analyse and/or trigger user interaction (e.g. mouse clicks) onto the GUI
+of applications that otherwise lack an API for such interaction.
 
 
 ## Usage
