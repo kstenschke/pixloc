@@ -172,7 +172,7 @@ int main(int argc, char **argv) {
 
   int location = scanner->ScanUniaxial(amount_px, is_trace_mode);
 
-  if (!is_trace_mode) std::cout << location;
+  if (!is_trace_mode) std::cout << (range_y < 2 ? "x:" : "y:" ) << location << ";";
   return 0;
 }
 
