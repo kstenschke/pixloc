@@ -106,7 +106,8 @@ pixloc --mode "find vertical" --from 1,60 --range 100 --color 188,188,188 --amou
 
 Scans pixels starting from the specified coordinate, iterating on the x or y axis to the right or down, and outputs the 
 offset (x or y value) of the first found occurrence of a set of consecutive pixels of the specified color. 
-If no such consecutive homochromatic set of pixels is found, the output is -1.
+If no such consecutive homochromatic set of pixels is found, the output is 
+```x=-1;``` / ```y=-1;```.
 
 
 ### Find a 1-bit pixel bitmask within a specified screen area
