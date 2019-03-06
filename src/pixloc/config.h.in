@@ -1,0 +1,11 @@
+//
+// Created by Kay on 06.03.19.
+//
+
+#ifndef PIXLOC_CONFIG_H
+#define PIXLOC_CONFIG_H
+
+#define Pixloc_VERSION_MAJOR @Pixloc_VERSION_MAJOR@
+#define Pixloc_VERSION_MINOR @Pixloc_VERSION_MINOR@
+
+#endif //PIXLOC_CONFIG_H

@@ -32,6 +32,7 @@
 #include <cstring>
 #include <iostream>
 
+#include "config.h"
 #include "external/clara.hpp"
 #include "pixloc/helper/helper_strings.h"
 #include "cli_options.h"
@@ -74,7 +75,9 @@ int main(int argc, char **argv) {
   }
 
   if (show_help) {
-    std::cout << "pixloc version 0.1 Copyright (c) Kay Stenschke\n\n";
+    std::cout << "pixloc version " <<
+              Pixloc_VERSION_MAJOR << "." << Pixloc_VERSION_MINOR << "\n"
+                  "Copyright (c) 2019 Kay Stenschke\n\n";
     parser.writeToStream(std::cout);
     std::cout << pixloc::clioptions::kUsageExamples;
     return 0;
