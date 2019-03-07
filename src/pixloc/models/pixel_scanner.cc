@@ -117,7 +117,7 @@ void PixelScanner::TraceMainColor() {
   }
   XFree(image);
 
-  helper::strings::TraceMostProminentItem(colors);
+  std::cout << helper::strings::FindMostCommon(colors);
 }
 
 void PixelScanner::TraceBitmask() {

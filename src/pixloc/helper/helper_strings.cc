@@ -34,6 +34,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <map>
 
 #include "helper_strings.h"
 
@@ -84,28 +85,16 @@ int ToInt(std::string str, int defaultValue) {
          : defaultValue;
 }
 
-void TraceMostProminentItem(std::vector<std::string> &items) {
-  unsigned long amount_items = items.size();
-  int max_count = 0;
+std::string FindMostCommon(const std::vector<std::string> &vec) {
+  std::map<std::string,unsigned long> str_map;
+  for (const auto &str : vec)
+    ++str_map[str];
 
-  for (unsigned long i = 0; i < amount_items; i++) {
-    int count = 1;
-    for (unsigned long j = i + 1; j < amount_items; j++) {
-      if (strcmp(items.at(i).c_str(), items.at(j).c_str())==0) count++;
-    }
-    if (count > max_count) max_count = count;
-  }
+  typedef decltype(std::pair<std::string,unsigned long>()) pair_type;
 
-  for (unsigned long i = 0; i < amount_items; i++) {
-    int count = 1;
-    for (unsigned long j = i + 1; j < amount_items; j++) {
-      if (strcmp(items.at(i).c_str(), items.at(j).c_str())==0) count++;
-    }
-    if (count==max_count) {
-      std::cout << items[i] << "\n";
-      break;
-    }
-  }
+  auto comp = [](const pair_type &pair1, const pair_type &pair2) -> bool {
+    return pair1.second < pair2.second; };
+  return std::max_element(str_map.cbegin(), str_map.cend(), comp)->first;
 }
 
 } // namespace strings
