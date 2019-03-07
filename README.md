@@ -127,7 +127,7 @@ If the given pixel mask is not found, the output is ``x=-1; y=-1``.
 The optional color tolerance option makes it easier to locate bitmasks including antialias pixels, whose colors can vary:
 
 ```bash
-pixloc --m "find bitmask" --f 1,60 --r 128,32 --c 188,188,188 --b *__,**_,***,**_,*__ -t 50
+pixloc -m "find bitmask" -f 1,60 -r 128,32 -c 188,188,188 -b *__,**_,***,**_,*__ -t 50
 ```
 
 
