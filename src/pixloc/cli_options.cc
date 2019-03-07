@@ -76,16 +76,10 @@ bool mode_requires_bitmask(int mode_id) {
 }
 
 bool mode_requires_color(int mode_id) {
-  switch (mode_id) {
-    case kModeIdFindBitmask:
-    case kModeIdFindConsecutiveHorizontal:
-    case kModeIdFindConsecutiveVertical:
-    case kModeIdTraceBitmask:return true;
-    case kModeIdTraceHorizontal:
-    case kModeIdTraceMainColor:
-    case kModeIdTraceVertical:
-    default:return false;
-  }
+  return mode_id==kModeIdFindBitmask ||
+         mode_id==kModeIdFindConsecutiveHorizontal ||
+         mode_id==kModeIdFindConsecutiveVertical ||
+         mode_id==kModeIdTraceBitmask;
 }
 
 bool is_valid_range_for_mode(int mode_id, const std::string &range) {
