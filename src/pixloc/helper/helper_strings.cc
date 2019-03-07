@@ -73,7 +73,7 @@ bool IsNumeric(const std::string &str, bool allow_negative) {
   int index = 0;
   while (it!=str.end() && (std::isdigit(*it) || (allow_negative && index==0 && str[0]=='-'))) {
     ++it;
-    index++;
+    ++index;
   }
 
   return it==str.end() && (!allow_negative || (str[0]!='-' || str.length() > 1));

@@ -71,8 +71,8 @@ int PixelScanner::ScanUniaxial(int amount_find, bool trace) {
   int red, green, blue;
   int amount_found = 0;
 
-  for (int y = 0; y < range_y; y++) {
-    for (int x = 0; x < range_x; x++) {
+  for (int y = 0; y < range_y; ++y) {
+    for (int x = 0; x < range_x; ++x) {
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
@@ -83,7 +83,7 @@ int PixelScanner::ScanUniaxial(int amount_find, bool trace) {
       if (trace) std::cout << red << "," << green << "," << blue << "\n";
 
       if (color_matcher->Matches(red, green, blue)) {
-        amount_found++;
+        ++amount_found;
         if (amount_found==amount_find) {
           XFree(image);
           return range_y==1 ? x : y;
@@ -101,8 +101,8 @@ void PixelScanner::TraceMainColor() {
 
   std::vector<std::string> colors;
 
-  for (int y = 0; y < range_y; y++) {
-    for (int x = 0; x < range_x; x++) {
+  for (int y = 0; y < range_y; ++y) {
+    for (int x = 0; x < range_x; ++x) {
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
@@ -122,7 +122,7 @@ void PixelScanner::TraceMainColor() {
 
 void PixelScanner::TraceBitmask() {
   auto *color = new XColor;
-  for (int y = 0; y < range_y; y++) {
+  for (int y = 0; y < range_y; ++y) {
     std::cout << this->GetBitmaskLineFromImage(display, color, y) << (y < range_y - 1 ? "," : "") << "\n";
   }
 
@@ -131,7 +131,7 @@ void PixelScanner::TraceBitmask() {
 
 std::string PixelScanner::GetBitmaskLineFromImage(Display *display, XColor *color, int y) {
   std::string bitmask_haystack;
-  for (int x = 0; x < this->range_x; x++) {
+  for (int x = 0; x < this->range_x; ++x) {
     color->pixel = XGetPixel(this->image, x, y);
     XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
@@ -173,7 +173,7 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
 
   // Iterate over lines of haystack
   std::string haystack_line;
-  for (index_haystack_line = 0; index_haystack_line < last_possible_occurrence_haystack_line; index_haystack_line++) {
+  for (index_haystack_line = 0; index_haystack_line < last_possible_occurrence_haystack_line; ++index_haystack_line) {
     FetchHaystackLine(haystack_lines,
                       index_haystack_line_empty,
                       index_haystack_line,
@@ -194,7 +194,7 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
       }
 
       // Iterate down the lines of needle
-      for (index_needle_line = 1; index_needle_line < amount_needle_lines; index_needle_line++) {
+      for (index_needle_line = 1; index_needle_line < amount_needle_lines; ++index_needle_line) {
         // Check whether haystack line contains resp. needle line at rel. offset
         const char *needle_line = needle_lines[index_needle_line].c_str();
 
