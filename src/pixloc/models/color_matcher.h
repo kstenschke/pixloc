@@ -38,7 +38,7 @@ namespace pixloc {
  */
 class ColorMatcher {
  public:
-  // Maximum color channel value, =256*256, zero-based. @see https://tronche.com/gui/x/xlib/color/structures.html
+  // @see Xlib manual - https://www.x.org/releases/X11R7.7/doc/libX11/libX11/libX11.html#Color_Structures
   static const unsigned short kXColorMaxChannelValue = 65535;
 
   // Constructor
