@@ -154,8 +154,10 @@ int main(int argc, char **argv) {
       display,
       static_cast<unsigned short>(from_x), static_cast<unsigned short>(from_y),
       static_cast<unsigned short>(range_x), static_cast<unsigned short>(range_y),
-      static_cast<unsigned short>(red), static_cast<unsigned short>(green), static_cast<unsigned short>(blue),
-      static_cast<unsigned short>(color_tolerance));
+      static_cast<unsigned short>(red * 256),
+      static_cast<unsigned short>(green * 256),
+      static_cast<unsigned short>(blue * 256),
+      static_cast<unsigned short>(color_tolerance * 256));
 
   if (mode_id == pixloc::clioptions::kModeIdTraceMainColor) {
     scanner->TraceMainColor();

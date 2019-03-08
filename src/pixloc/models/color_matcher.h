@@ -27,29 +27,38 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef CLASS_PIXLOC_COLOR_MATCHER_ABSTRACT
-#define CLASS_PIXLOC_COLOR_MATCHER_ABSTRACT
+#ifndef CLASS_PIXLOC_COLOR_MATCHER_RANGE
+#define CLASS_PIXLOC_COLOR_MATCHER_RANGE
+
+#include "color_matcher.h"
 
 namespace pixloc {
-
 /**
- * Color matcher interface
+ * Color matcher (RGB range)
  */
-class ColorMatcherAbstract {
+class ColorMatcher {
  public:
+  // Maximum possible value of red, green or blue, = 256*256
+  static const int kMaximumColorValue = 65536;
+
+  static const int kOperationAdd = 1;
+  static const int kOperationSubtract = 2;
+
   // Constructor
-  ColorMatcherAbstract(unsigned short find_red, unsigned short find_green, unsigned short find_blue);
+  ColorMatcher(unsigned short find_red, unsigned short find_green, unsigned short find_blue, unsigned short tolerance);
 
-  virtual bool Matches(unsigned short red, unsigned short green, unsigned short blue);
+  unsigned short CalculateLimit(unsigned short color_value, unsigned short tolerance, unsigned short operation);
 
-  virtual void SetTolerance(unsigned short tolerance);
+  bool Matches(unsigned short red, unsigned short green, unsigned short blue);
 
- protected:
-  unsigned short find_red;
-  unsigned short find_green;
-  unsigned short find_blue;
-  unsigned short tolerance = 0;
+ private:
+  unsigned short red_min;
+  unsigned short red_max;
+  unsigned short green_min;
+  unsigned short green_max;
+  unsigned short blue_min;
+  unsigned short blue_max;
 };
 } // namespace pixloc
 
-#endif //PIXLOC_COLOR_MATCHER
+#endif //PIXLOC_COLOR_MATCHER_RGB_RANGE

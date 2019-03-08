@@ -37,9 +37,7 @@
 #include <iostream>
 #include <vector>
 
-#include "pixloc/models/color_matcher_abstract.h"
-#include "pixloc/models/color_matcher_precise.h"
-#include "pixloc/models/color_matcher_range.h"
+#include "pixloc/models/color_matcher.h"
 
 namespace pixloc {
 class PixelScanner {
@@ -54,7 +52,7 @@ class PixelScanner {
           unsigned short tolerance);
 
   // Scan pixels on x or y axis, trace or find
-  int ScanUniaxial(int amount_find, bool trace);
+  int ScanUniaxial(unsigned short amount_find, bool trace);
 
   void TraceMainColor();
 
@@ -67,23 +65,23 @@ class PixelScanner {
   Display *display;
   XImage *image;
 
-  int x_start;
-  int y_start;
-  unsigned int range_x;
-  unsigned int range_y;
+  unsigned short x_start;
+  unsigned short y_start;
+  unsigned short range_x;
+  unsigned short range_y;
 
-  ColorMatcherAbstract *color_matcher = new pixloc::ColorMatcherAbstract(0, 0, 0);
+  ColorMatcher *color_matcher;
 
-  std::string GetBitmaskLineFromImage(XColor *color, int y);
+  std::string GetBitmaskLineFromImage(XColor *color, unsigned short y);
 
   // Get line from bitmask haystack. this is lazy-loaded: initialize it via GetBitmaskLineFromImage if not yet
   void FetchHaystackLine(std::vector<std::string> &haystack_lines,
-                         long &index_empty_haystack_line,
-                         unsigned long index_haystack_line,
+                         unsigned short &index_empty_haystack_line,
+                         unsigned short index_haystack_line,
                          XColor *color,
                          std::string &haystack_line);
 
-  std::string FormatCoordinate(unsigned long offset_needle, unsigned long index_haystack_line) const;
+  std::string FormatCoordinate(signed long offset_needle, unsigned short index_haystack_line) const;
 }; // class Scanner
 } // namespace pixloc
 

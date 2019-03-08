@@ -27,36 +27,47 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "color_matcher_abstract.h"
-#include "color_matcher_range.h"
+#include <iostream>
+#include "color_matcher.h"
 
 namespace pixloc {
 
 // Constructor
-ColorMatcherRange::ColorMatcherRange(unsigned short find_red,
-                                     unsigned short find_green,
-                                     unsigned short find_blue) : ColorMatcherAbstract(find_red,
-                                                                                    find_green,
-                                                                                    find_blue) {
-};
+ColorMatcher::ColorMatcher(unsigned short find_red,
+                           unsigned short find_green,
+                           unsigned short find_blue,
+                           unsigned short tolerance) {
+  // @todo test needed minimum tolerance for color values (that are a multiple of 256)
+//  if (tolerance == 0) tolerance = 128;
 
-void ColorMatcherRange::SetTolerance(unsigned short tolerance) {
-  this->red_min = this->find_red - tolerance;
-  this->red_max = this->find_red + tolerance;
-  this->green_min = this->find_green - tolerance;
-  this->green_max = this->find_green + tolerance;
-  this->blue_min = this->find_blue - tolerance;
-  this->blue_max = this->find_blue + tolerance;
+  this->red_min = CalculateLimit(find_red, tolerance, kOperationSubtract);
+  this->red_max = CalculateLimit(find_red, tolerance, kOperationAdd);
+  this->green_min = CalculateLimit(find_green, tolerance, kOperationSubtract);
+  this->green_max = CalculateLimit(find_green, tolerance, kOperationAdd);
+  this->blue_min = CalculateLimit(find_blue, tolerance, kOperationSubtract);
+  this->blue_max = CalculateLimit(find_blue, tolerance, kOperationAdd);
 }
 
-bool ColorMatcherRange::Matches(unsigned short red, unsigned short green, unsigned short blue) {
+unsigned short ColorMatcher::CalculateLimit(unsigned short color_value,
+                                            unsigned short tolerance,
+                                            unsigned short operation) {
+  if (operation==kOperationSubtract) {
+    if (tolerance > color_value) return 0; 
+     return color_value - tolerance;
+  }
+
+  if (color_value + tolerance > kMaximumColorValue) return static_cast<unsigned short>(kMaximumColorValue);
+  return color_value + tolerance;
+}
+
+bool ColorMatcher::Matches(unsigned short red, unsigned short green, unsigned short blue) {
   return
       red >= this->red_min &&
-      red <= this->red_max &&
-      green >= this->green_min &&
-      green <= this->green_max &&
-      blue >= this->blue_min &&
-      blue <= this->blue_max;
+          red <= this->red_max &&
+          green >= this->green_min &&
+          green <= this->green_max &&
+          blue >= this->blue_min &&
+          blue <= this->blue_max;
 }
 
 } // namespace pixloc
