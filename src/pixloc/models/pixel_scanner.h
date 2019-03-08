@@ -78,7 +78,7 @@ class PixelScanner {
 
   // Get line from bitmask haystack. this is lazy-loaded: initialize it via GetBitmaskLineFromImage if not yet
   void FetchHaystackLine(std::vector<std::string> &haystack_lines,
-                         long &index_empy_haystack_line,
+                         long &index_empty_haystack_line,
                          unsigned long index_haystack_line,
                          XColor *color,
                          std::string &haystack_line);

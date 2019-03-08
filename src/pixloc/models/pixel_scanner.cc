@@ -76,9 +76,9 @@ int PixelScanner::ScanUniaxial(int amount_find, bool trace) {
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
-      red = color->red/256;
-      green = color->green/256;
-      blue = color->blue/256;
+      red = color->red / 256;
+      green = color->green / 256;
+      blue = color->blue / 256;
 
       if (trace) std::cout << red << "," << green << "," << blue << "\n";
 
@@ -106,9 +106,9 @@ void PixelScanner::TraceMainColor() {
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
-      red = color->red/256;
-      green = color->green/256;
-      blue = color->blue/256;
+      red = color->red / 256;
+      green = color->green / 256;
+      blue = color->blue / 256;
 
       char rgb[12];
       sprintf(rgb, "%d,%d,%d", red, green, blue);
@@ -234,16 +234,16 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
 
 // Get line from bitmask haystack. this is lazy-loaded: initialize it via GetBitmaskLineFromImage if not yet
 void PixelScanner::FetchHaystackLine(std::vector<std::string> &haystack_lines,
-                                     long &index_empy_haystack_line,
+                                     long &index_empty_haystack_line,
                                      unsigned long index_haystack_line,
                                      XColor *color,
                                      std::string &haystack_line) {
-  if (index_empy_haystack_line > index_haystack_line) {
+  if (index_empty_haystack_line > index_haystack_line) {
     haystack_line = haystack_lines.at(index_haystack_line);
   } else {
     haystack_line = this->GetBitmaskLineFromImage(color, static_cast<int>(index_haystack_line));
     haystack_lines.at(index_haystack_line) = haystack_line;
-    index_empy_haystack_line = index_haystack_line + 1;
+    index_empty_haystack_line = index_haystack_line + 1;
   }
 }
 
