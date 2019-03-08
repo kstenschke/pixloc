@@ -48,10 +48,10 @@ class PixelScanner {
 
   // Constructor
   PixelScanner(Display *display,
-          int x_start, int y_start,
-          unsigned int range_x, unsigned int range_y,
-          int find_red, int find_green, int find_blue,
-          int tolerance);
+          unsigned short x_start, unsigned short y_start,
+          unsigned short range_x, unsigned short range_y,
+          unsigned short find_red, unsigned short find_green, unsigned short find_blue,
+          unsigned short tolerance);
 
   // Scan pixels on x or y axis, trace or find
   int ScanUniaxial(int amount_find, bool trace);

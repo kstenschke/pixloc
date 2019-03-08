@@ -150,10 +150,12 @@ int main(int argc, char **argv) {
   }
 
   // Scan pixels
-  auto *scanner = new pixloc::PixelScanner(display,
-                                           from_x, from_y,
-                                           static_cast<unsigned int>(range_x), static_cast<unsigned int>(range_y),
-                                           red, green, blue, color_tolerance);
+  auto *scanner = new pixloc::PixelScanner(
+      display,
+      static_cast<unsigned short>(from_x), static_cast<unsigned short>(from_y),
+      static_cast<unsigned short>(range_x), static_cast<unsigned short>(range_y),
+      static_cast<unsigned short>(red), static_cast<unsigned short>(green), static_cast<unsigned short>(blue),
+      static_cast<unsigned short>(color_tolerance));
 
   if (mode_id == pixloc::clioptions::kModeIdTraceMainColor) {
     scanner->TraceMainColor();
