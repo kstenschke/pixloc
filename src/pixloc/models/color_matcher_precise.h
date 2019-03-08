@@ -39,16 +39,16 @@ namespace pixloc {
 class ColorMatcherPrecise : public ColorMatcherAbstract {
  public:
   // Constructor
-  ColorMatcherPrecise(int find_red, int find_green, int find_blue);
+  ColorMatcherPrecise(unsigned short find_red, unsigned short find_green, unsigned short find_blue);
 
-  void SetTolerance(int tolerance) final;
+  void SetTolerance(unsigned short tolerance) final;
 
-  bool Matches(int red, int green, int blue) final;
+  bool Matches(unsigned short red, unsigned short green, unsigned short blue) final;
 
  protected:
-  int find_red;
-  int find_green;
-  int find_blue;
+  unsigned short find_red;
+  unsigned short find_green;
+  unsigned short find_blue;
 };
 } // namespace pixloc
 

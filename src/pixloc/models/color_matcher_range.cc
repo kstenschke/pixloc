@@ -33,14 +33,14 @@
 namespace pixloc {
 
 // Constructor
-ColorMatcherRange::ColorMatcherRange(int find_red,
-                                     int find_green,
-                                     int find_blue) : ColorMatcherAbstract(find_red,
-                                                                           find_green,
-                                                                           find_blue) {
+ColorMatcherRange::ColorMatcherRange(unsigned short find_red,
+                                     unsigned short find_green,
+                                     unsigned short find_blue) : ColorMatcherAbstract(find_red,
+                                                                                    find_green,
+                                                                                    find_blue) {
 };
 
-void ColorMatcherRange::SetTolerance(int tolerance) {
+void ColorMatcherRange::SetTolerance(unsigned short tolerance) {
   this->red_min = this->find_red - tolerance;
   this->red_max = this->find_red + tolerance;
   this->green_min = this->find_green - tolerance;
@@ -49,7 +49,7 @@ void ColorMatcherRange::SetTolerance(int tolerance) {
   this->blue_max = this->find_blue + tolerance;
 }
 
-bool ColorMatcherRange::Matches(int red, int green, int blue) {
+bool ColorMatcherRange::Matches(unsigned short red, unsigned short green, unsigned short blue) {
   return
       red >= this->red_min &&
       red <= this->red_max &&

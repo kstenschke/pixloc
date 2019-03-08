@@ -39,19 +39,19 @@ namespace pixloc {
 class ColorMatcherRange : public ColorMatcherAbstract {
  public:
   // Constructor
-  ColorMatcherRange(int find_red, int find_green, int find_blue);
+  ColorMatcherRange(unsigned short find_red, unsigned short find_green, unsigned short find_blue);
 
-  void SetTolerance(int tolerance) final;
+  void SetTolerance(unsigned short tolerance) final;
 
-  bool Matches(int red, int green, int blue) final;
+  bool Matches(unsigned short red, unsigned short green, unsigned short blue) final;
 
  private:
-  int red_min;
-  int red_max;
-  int green_min;
-  int green_max;
-  int blue_min;
-  int blue_max;
+  unsigned short red_min;
+  unsigned short red_max;
+  unsigned short green_min;
+  unsigned short green_max;
+  unsigned short blue_min;
+  unsigned short blue_max;
 };
 } // namespace pixloc
 

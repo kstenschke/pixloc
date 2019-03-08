@@ -38,17 +38,17 @@ namespace pixloc {
 class ColorMatcherAbstract {
  public:
   // Constructor
-  ColorMatcherAbstract(int find_red, int find_green, int find_blue);
+  ColorMatcherAbstract(unsigned short find_red, unsigned short find_green, unsigned short find_blue);
 
-  virtual bool Matches(int red, int green, int blue);
+  virtual bool Matches(unsigned short red, unsigned short green, unsigned short blue);
 
-  virtual void SetTolerance(int tolerance);
+  virtual void SetTolerance(unsigned short tolerance);
 
  protected:
-  int find_red;
-  int find_green;
-  int find_blue;
-  int tolerance = 0;
+  unsigned short find_red;
+  unsigned short find_green;
+  unsigned short find_blue;
+  unsigned short tolerance = 0;
 };
 } // namespace pixloc
 

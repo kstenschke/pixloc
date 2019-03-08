@@ -35,16 +35,18 @@ namespace pixloc {
 /*
  * Constructor
  */
-ColorMatcherPrecise::ColorMatcherPrecise(int find_red,
-                                         int find_green,
-                                         int find_blue) : ColorMatcherAbstract(find_red, find_green, find_blue) {
+ColorMatcherPrecise::ColorMatcherPrecise(unsigned short find_red,
+                                         unsigned short find_green,
+                                         unsigned short find_blue) : ColorMatcherAbstract(find_red,
+                                                                                        find_green,
+                                                                                        find_blue) {
 };
 
-void ColorMatcherPrecise::SetTolerance(int tolerance) {
+void ColorMatcherPrecise::SetTolerance(unsigned short tolerance) {
   this->tolerance = tolerance;
 }
 
-bool ColorMatcherPrecise::Matches(int red, int green, int blue) {
+bool ColorMatcherPrecise::Matches(unsigned short red, unsigned short green, unsigned short blue) {
   return red==find_red && green==find_green && blue==find_blue;
 }
 
