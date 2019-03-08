@@ -39,9 +39,7 @@ namespace pixloc {
 class ColorMatcherPrecise : public ColorMatcherAbstract {
  public:
   // Constructor
-  ColorMatcherPrecise(int find_red,
-                    int find_green,
-                    int find_blue);
+  ColorMatcherPrecise(int find_red, int find_green, int find_blue);
 
   void SetTolerance(int tolerance) final;
 

@@ -39,9 +39,7 @@ namespace pixloc {
 class ColorMatcherRange : public ColorMatcherAbstract {
  public:
   // Constructor
-  ColorMatcherRange(int find_red,
-                      int find_green,
-                      int find_blue);
+  ColorMatcherRange(int find_red, int find_green, int find_blue);
 
   void SetTolerance(int tolerance) final;
 

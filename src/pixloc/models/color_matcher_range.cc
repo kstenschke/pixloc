@@ -32,9 +32,7 @@
 
 namespace pixloc {
 
-/*
- * Constructor
- */
+// Constructor
 ColorMatcherRange::ColorMatcherRange(int find_red,
                                      int find_green,
                                      int find_blue) : ColorMatcherAbstract(find_red,
