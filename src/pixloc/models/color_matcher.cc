@@ -27,7 +27,6 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <iostream>
 #include "color_matcher.h"
 
 namespace pixloc {
@@ -49,13 +48,14 @@ ColorMatcher::ColorMatcher(unsigned short find_red,
 }
 
 unsigned short ColorMatcher::CalculateChannelMin(unsigned short value, unsigned short tolerance) {
-    if (tolerance > value) return 0;
-     return value - tolerance;
+  if (tolerance > value) return 0;
+  return value - tolerance;
 }
 
 unsigned short ColorMatcher::CalculateChannelMax(unsigned short value, unsigned short tolerance) {
-  if (value + tolerance > kMaximumColorValue) return static_cast<unsigned short>(kMaximumColorValue);
-  return value + tolerance;
+  return value + tolerance > kXColorMaxChannelValue
+         ? kXColorMaxChannelValue
+         : value + tolerance;
 }
 
 bool ColorMatcher::Matches(unsigned short red, unsigned short green, unsigned short blue) {
