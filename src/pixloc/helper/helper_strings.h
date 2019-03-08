@@ -35,7 +35,6 @@
 namespace helper {
 namespace strings {
 
-extern int sub_str_count(const char *str, const char *sub);
 extern std::vector<std::string> Explode(std::string const &str, char delimiter);
 extern bool IsNumeric(const std::string &str, bool allow_negative = false);
 extern int ToInt(std::string str, int defaultValue = 0);

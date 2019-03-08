@@ -42,19 +42,6 @@ namespace helper {
 namespace strings {
 
 /**
- * Get amount of sub string occurrences
- */
-int sub_str_count(const char *str, const char *sub) {
-  auto length = static_cast<int>(strlen(sub));
-  if (length == 0) return 0;
-
-  int count = 0;
-  for (str = strstr(str, sub); str; str = strstr(str + length, sub)) ++count;
-
-  return count;
-}
-
-/**
  * Split given string by given character delimiter into vector of strings
  */
 std::vector<std::string> Explode(std::string const &str, char delimiter) {

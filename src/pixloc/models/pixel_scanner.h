@@ -43,7 +43,6 @@ namespace pixloc {
 class PixelScanner {
 
  public:
-
   // Constructor
   PixelScanner(Display *display,
           unsigned short x_start, unsigned short y_start,
@@ -61,7 +60,6 @@ class PixelScanner {
   std::string FindBitmask(const std::string &bitmask);
 
  private:
-
   Display *display;
   XImage *image;
 
