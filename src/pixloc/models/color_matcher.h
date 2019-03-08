@@ -38,8 +38,8 @@ namespace pixloc {
  */
 class ColorMatcher {
  public:
-  // Maximum possible value of red, green or blue, = 256*256
-  static const int kMaximumColorValue = 65536;
+  // Maximum color channel value, =256*256, zero-based. @see https://tronche.com/gui/x/xlib/color/structures.html
+  static const int kMaximumColorValue = 65535;
 
   // Constructor
   ColorMatcher(unsigned short find_red, unsigned short find_green, unsigned short find_blue, unsigned short tolerance);
