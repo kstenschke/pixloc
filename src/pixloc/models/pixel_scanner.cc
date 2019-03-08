@@ -123,13 +123,13 @@ void PixelScanner::TraceMainColor() {
 void PixelScanner::TraceBitmask() {
   auto *color = new XColor;
   for (int y = 0; y < range_y; ++y) {
-    std::cout << this->GetBitmaskLineFromImage(display, color, y) << (y < range_y - 1 ? "," : "") << "\n";
+    std::cout << this->GetBitmaskLineFromImage(color, y) << (y < range_y - 1 ? "," : "") << "\n";
   }
 
   XFree(image);
 }
 
-std::string PixelScanner::GetBitmaskLineFromImage(Display *display, XColor *color, int y) {
+std::string PixelScanner::GetBitmaskLineFromImage(XColor *color, int y) {
   std::string bitmask_haystack;
   for (int x = 0; x < this->range_x; ++x) {
     color->pixel = XGetPixel(this->image, x, y);
@@ -241,7 +241,7 @@ void PixelScanner::FetchHaystackLine(std::vector<std::string> &haystack_lines,
   if (index_empy_haystack_line > index_haystack_line) {
     haystack_line = haystack_lines.at(index_haystack_line);
   } else {
-    haystack_line = this->GetBitmaskLineFromImage(display, color, static_cast<int>(index_haystack_line));
+    haystack_line = this->GetBitmaskLineFromImage(color, static_cast<int>(index_haystack_line));
     haystack_lines.at(index_haystack_line) = haystack_line;
     index_empy_haystack_line = index_haystack_line + 1;
   }

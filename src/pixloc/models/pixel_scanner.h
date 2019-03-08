@@ -74,7 +74,7 @@ class PixelScanner {
 
   ColorMatcherAbstract *color_matcher = new pixloc::ColorMatcherAbstract(0, 0, 0);
 
-  std::string GetBitmaskLineFromImage(Display *display, XColor *color, int y);
+  std::string GetBitmaskLineFromImage(XColor *color, int y);
 
   // Get line from bitmask haystack. this is lazy-loaded: initialize it via GetBitmaskLineFromImage if not yet
   void FetchHaystackLine(std::vector<std::string> &haystack_lines,
