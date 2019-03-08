@@ -41,13 +41,8 @@ class ColorMatcher {
   // Maximum possible value of red, green or blue, = 256*256
   static const int kMaximumColorValue = 65536;
 
-  static const int kOperationAdd = 1;
-  static const int kOperationSubtract = 2;
-
   // Constructor
   ColorMatcher(unsigned short find_red, unsigned short find_green, unsigned short find_blue, unsigned short tolerance);
-
-  unsigned short CalculateLimit(unsigned short color_value, unsigned short tolerance, unsigned short operation);
 
   bool Matches(unsigned short red, unsigned short green, unsigned short blue);
 
@@ -58,6 +53,9 @@ class ColorMatcher {
   unsigned short green_max;
   unsigned short blue_min;
   unsigned short blue_max;
+
+  unsigned short CalculateChannelMin(unsigned short value, unsigned short tolerance);
+  unsigned short CalculateChannelMax(unsigned short value, unsigned short tolerance);
 };
 } // namespace pixloc
 
