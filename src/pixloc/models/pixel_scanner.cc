@@ -171,6 +171,9 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
   std::string haystack_line_compare;
   std::string needle_compare;
 
+  const char *needle_line;
+  unsigned long index_haystack_line_compare;
+
   // Iterate over lines of haystack
   std::string haystack_line;
   for (index_haystack_line = 0; index_haystack_line < last_possible_occurrence_haystack_line; ++index_haystack_line) {
@@ -196,9 +199,9 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
       // Iterate down the lines of needle
       for (index_needle_line = 1; index_needle_line < amount_needle_lines; ++index_needle_line) {
         // Check whether haystack line contains resp. needle line at rel. offset
-        const char *needle_line = needle_lines[index_needle_line].c_str();
+        needle_line = needle_lines[index_needle_line].c_str();
 
-        unsigned long index_haystack_line_compare = index_haystack_line + index_needle_line;
+        index_haystack_line_compare = index_haystack_line + index_needle_line;
         if (index_haystack_line > last_possible_occurrence_haystack_line)
           break;
 
