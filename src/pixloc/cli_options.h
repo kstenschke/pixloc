@@ -69,25 +69,25 @@ static const int kModeIdTraceMainColor = 6;
 static const int kModeIdTraceMouse = 7;
 static const int kModeIdTraceVertical = 8;
 
-int get_mode_id_from_name(const std::string &mode);
+unsigned short GetModeIdFromName(const std::string &mode);
 
-bool is_tupel_range_mode(int mode_id);
-bool is_horizontal_mode(int mode_id);
-bool is_trace_mode(int mode_id);
-bool is_bitmask_mode(int mode_id);
+bool IsTupelRangeMode(int mode_id);
+bool IsHorizontalMode(int mode_id);
+bool IsTraceMode(int mode_id);
+bool IsBitmaskMode(int mode_id);
 
-bool is_valid_numeric_tupel(std::string &str);
-bool is_valid_color(const std::string &color);
-bool is_valid_bitmask(const std::string &bitmask_px, int min_width, int min_height);
-bool is_valid_range_for_mode(int mode_id, const std::string &range);
+bool IsValidNumericTupel(std::string &str);
+bool IsValidColor(const std::string &color);
+void ValidateBitmask(const std::string &bitmask_px, int range_width, int range_height);
+bool IsValidRangeForMode(int mode_id, const std::string &range);
 
-bool mode_requires_amount_px(int mode_id);
-bool mode_requires_bitmask(int mode_id);
-bool mode_requires_color(int mode_id);
+bool ModeRequiresAmountPx(int mode_id);
+bool ModeRequiresBitmask(int mode_id);
+bool ModeRequiresColor(int mode_id);
 
-bool resolve_numeric_tupel(const std::string &str, int &number_1, int &number_2);
-bool resolve_scanning_range(int mode_id, const std::string &range, int &number_1, int &number_2);
-bool resolve_rgb_color(const std::string &color, int &red, int &green, int &blue);
+void ResolveNumericTupel(const std::string &str, int &number_1, int &number_2);
+void ResolveScanningRange(int mode_id, const std::string &range, int &number_1, int &number_2);
+void ResolveRgbColor(const std::string &color, int &red, int &green, int &blue);
 
 } // namespace clioptions
 } // namespace pixloc

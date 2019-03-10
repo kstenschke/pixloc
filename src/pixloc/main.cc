@@ -40,8 +40,6 @@
 
 using namespace clara;
 
-int print_error_and_usage_examples(const Parser &parser, const char *message);
-
 /**
  * @param argc Amount of arguments received
  * @param argv Array of arguments received, argv[0] is name and path of executable
@@ -83,70 +81,71 @@ int main(int argc, char **argv) {
     return 0;
   }
 
-  Display *display = XOpenDisplay(nullptr);
-  if (!display) {
-    std::cerr << "Error: Failed to open default display.\n";
-    return -1;
-  }
-
   // Resolve options
-  int mode_id = -1,
-      from_x = -1, from_y = -1,
+  Display *display;
+
+  unsigned short mode_id, amount_px = 1, color_tolerance = 0;
+
+  int from_x = -1, from_y = -1,
       mouse_x = -1, mouse_y = -1,
-      amount_px = 1,
       range_x = -1, range_y = -1,
-      red = -1, green = -1, blue = -1, color_tolerance = 0;
+      red = -1, green = -1, blue = -1;
 
-  if (mode.empty() || (mode_id = pixloc::clioptions::get_mode_id_from_name(mode))==-1)
-    return print_error_and_usage_examples(parser, "Valid mode is required.");
+  bool is_bitmask_mode, is_trace_mode;
 
-  bool is_trace_mode = pixloc::clioptions::is_trace_mode(mode_id);
-
-  bool use_mouse_for_from = strcmp(from.c_str(), "mouse")==0;
-  if (use_mouse_for_from || mode_id==pixloc::clioptions::kModeIdTraceMouse) {
-    // Get current mouse position
-    XEvent event{};
-    XQueryPointer(display, RootWindow(display, DefaultScreen(display)),
-                  &event.xbutton.root, &event.xbutton.window,
-                  &event.xbutton.x_root, &event.xbutton.y_root,
-                  &event.xbutton.x, &event.xbutton.y,
-                  &event.xbutton.state);
-    mouse_x = event.xbutton.x;
-    mouse_y = event.xbutton.y;
-
-    if (is_trace_mode) {
-      printf("x=%d; y=%d;\n", event.xbutton.x, event.xbutton.y);
-      if (mode_id==pixloc::clioptions::kModeIdTraceMouse) return 0;
+  try {
+    display = XOpenDisplay(nullptr);
+    if (!display) {
+      throw "Failed to open default display.\n";
     }
-  }
 
-  if (use_mouse_for_from) {
-    from_x = mouse_x;
-    from_y = mouse_y;
-  } else if (!pixloc::clioptions::resolve_numeric_tupel(from, from_x, from_y))
-    return print_error_and_usage_examples(parser, "Valid from coordinate is required.");
+    mode_id = pixloc::clioptions::GetModeIdFromName(mode);
+    is_trace_mode = pixloc::clioptions::IsTraceMode(mode_id);
 
-  if ((from_x==-1 || from_y==-1)
-      || !pixloc::clioptions::resolve_scanning_range(mode_id, range, range_x, range_y))
-    return print_error_and_usage_examples(parser, "Valid scanning range is required.");
-  // @TODO validate from_x + range_x and from_y + range_y against available display dimension
+    bool use_mouse_for_from = strcmp(from.c_str(), "mouse")==0;
+    if (use_mouse_for_from || mode_id==pixloc::clioptions::kModeIdTraceMouse) {
+      // Get current mouse position
+      XEvent event{};
+      XQueryPointer(display, RootWindow(display, DefaultScreen(display)),
+                    &event.xbutton.root, &event.xbutton.window,
+                    &event.xbutton.x_root, &event.xbutton.y_root,
+                    &event.xbutton.x, &event.xbutton.y,
+                    &event.xbutton.state);
+      mouse_x = static_cast<short>(event.xbutton.x);
+      mouse_y = static_cast<short>(event.xbutton.y);
 
-  if (pixloc::clioptions::mode_requires_amount_px(mode_id) && (amount_px = helper::strings::ToInt(amount, 0))==0)
-    return print_error_and_usage_examples(parser, "Valid amount of pixels to find is required.");
+      if (is_trace_mode) {
+        printf("x=%d; y=%d;\n", event.xbutton.x, event.xbutton.y);
+        if (mode_id==pixloc::clioptions::kModeIdTraceMouse) return 0;
+      }
+    }
 
-  bool is_bitmask_mode = pixloc::clioptions::is_bitmask_mode(mode_id);
-  if (pixloc::clioptions::mode_requires_bitmask(mode_id) && !pixloc::clioptions::is_valid_bitmask(bitmask, range_x, range_y))
-    return print_error_and_usage_examples(parser, "Valid bitmask to find is required.");
+    if (use_mouse_for_from) {
+      from_x = mouse_x;
+      from_y = mouse_y;
+    } else pixloc::clioptions::ResolveNumericTupel(from, from_x, from_y);
 
-  if (pixloc::clioptions::mode_requires_color(mode_id) && !pixloc::clioptions::resolve_rgb_color(color, red, green, blue))
-    return print_error_and_usage_examples(parser,
-                                          is_bitmask_mode
-                                          ? "Valid color to filter bitmask to find is required."
-                                          : "Valid color to find is required.");
+    if ((from_x != -1 && from_y != -1)) pixloc::clioptions::ResolveScanningRange(mode_id, range, range_x, range_y);
 
-  if (!tolerance.empty()) {
-    if (!helper::strings::IsNumeric(tolerance)) return print_error_and_usage_examples(parser, "Invalid color tolerance value given.");
-    color_tolerance = helper::strings::ToInt(tolerance, 0);
+    // @TODO validate from_x + range_x and from_y + range_y against available display dimension
+
+    if (pixloc::clioptions::ModeRequiresAmountPx(mode_id) &&
+        (amount_px = static_cast<unsigned short>(helper::strings::ToInt(amount, 0)))==0)
+      throw "Valid amount of pixels to find is required.";
+
+    is_bitmask_mode = pixloc::clioptions::IsBitmaskMode(mode_id);
+    if (pixloc::clioptions::ModeRequiresBitmask(mode_id))
+      pixloc::clioptions::ValidateBitmask(bitmask, range_x, range_y);
+
+    if (pixloc::clioptions::ModeRequiresColor(mode_id)) pixloc::clioptions::ResolveRgbColor(color, red, green, blue);
+
+    if (!tolerance.empty()) {
+      if (!helper::strings::IsNumeric(tolerance)) throw "Invalid color tolerance value given.";
+      color_tolerance = static_cast<unsigned short>(helper::strings::ToInt(tolerance, 0));
+    }
+  } catch (char const *exception) {
+    std::cerr << "Error: " << exception << "\nFor help run: pixloc -h\n\n";
+    return -1;
   }
 
   // Scan pixels
@@ -165,25 +164,12 @@ int main(int argc, char **argv) {
   }
 
   if (is_bitmask_mode) {
-    if (is_trace_mode) {
-      scanner->TraceBitmask();
-      return 0;
-    }
-
-    std::cout << scanner->FindBitmask(bitmask);
+    if (is_trace_mode) scanner->TraceBitmask();
+    else std::cout << scanner->FindBitmask(bitmask);
     return 0;
   }
 
   int location = scanner->ScanUniaxial(amount_px, is_trace_mode);
-
   if (!is_trace_mode) std::cout << (range_y < 2 ? "x:" : "y:" ) << location << ";";
   return 0;
-}
-
-int print_error_and_usage_examples(const Parser &parser, const char *message) {
-  std::cerr << "Error: " << message << "\n\n";
-  parser.writeToStream(std::cerr);
-  std::cerr << pixloc::clioptions::kUsageExamples;
-
-  return -1;
 }

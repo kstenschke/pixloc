@@ -35,7 +35,9 @@
 namespace pixloc {
 namespace clioptions {
 
-int get_mode_id_from_name(const std::string &mode) {
+unsigned short GetModeIdFromName(const std::string &mode) {
+  if (mode.empty()) throw "No mode given.";
+
   if (strcmp(mode.c_str(), kModeNameFindBitmask)==0) return kModeIdFindBitmask;
   if (strcmp(mode.c_str(), kModeNameFindConsecutiveHorizontal)==0) return kModeIdFindConsecutiveHorizontal;
   if (strcmp(mode.c_str(), kModeNameFindConsecutiveVertical)==0) return kModeIdFindConsecutiveVertical;
@@ -44,18 +46,19 @@ int get_mode_id_from_name(const std::string &mode) {
   if (strcmp(mode.c_str(), kModeNameTraceMainColor)==0) return kModeIdTraceMainColor;
   if (strcmp(mode.c_str(), kModeNameTraceMouse)==0) return kModeIdTraceMouse;
   if (strcmp(mode.c_str(), kModeNameTraceVertical)==0) return kModeIdTraceVertical;
-  return -1;
+
+  throw "Valid mode is required.";
 }
 
-bool is_tupel_range_mode(int mode_id) {
+bool IsTupelRangeMode(int mode_id) {
   return mode_id==kModeIdTraceBitmask || mode_id==kModeIdFindBitmask || mode_id==kModeIdTraceMainColor;
 }
 
-bool is_horizontal_mode(int mode_id) {
+bool IsHorizontalMode(int mode_id) {
   return mode_id==kModeIdTraceHorizontal || mode_id==kModeIdFindConsecutiveHorizontal;
 }
 
-bool is_trace_mode(int mode_id) {
+bool IsTraceMode(int mode_id) {
   return mode_id==kModeIdTraceHorizontal ||
          mode_id==kModeIdTraceVertical ||
          mode_id==kModeIdTraceBitmask ||
@@ -63,78 +66,80 @@ bool is_trace_mode(int mode_id) {
          mode_id==kModeIdTraceMouse;
 }
 
-bool is_bitmask_mode(int mode_id) {
+bool IsBitmaskMode(int mode_id) {
   return mode_id==kModeIdTraceBitmask || mode_id==kModeIdFindBitmask;
 }
 
-bool mode_requires_amount_px(int mode_id) {
+bool ModeRequiresAmountPx(int mode_id) {
   return mode_id==kModeIdFindConsecutiveHorizontal || mode_id==kModeIdFindConsecutiveVertical;
 }
 
-bool mode_requires_bitmask(int mode_id) {
+bool ModeRequiresBitmask(int mode_id) {
   return mode_id==kModeIdFindBitmask;
 }
 
-bool mode_requires_color(int mode_id) {
+bool ModeRequiresColor(int mode_id) {
   return mode_id==kModeIdFindBitmask ||
          mode_id==kModeIdFindConsecutiveHorizontal ||
          mode_id==kModeIdFindConsecutiveVertical ||
          mode_id==kModeIdTraceBitmask;
 }
 
-bool is_valid_range_for_mode(int mode_id, const std::string &range) {
-  return is_tupel_range_mode(mode_id)
-         ? is_valid_numeric_tupel(const_cast<std::string &>(range))
+bool IsValidRangeForMode(int mode_id, const std::string &range) {
+  return IsTupelRangeMode(mode_id)
+         ? IsValidNumericTupel(const_cast<std::string &>(range))
          : helper::strings::IsNumeric(range);
 }
 
-bool is_valid_color(const std::string &color) {
+bool IsValidColor(const std::string &color) {
   return !color.empty() && std::regex_match(color, std::regex("[1-9]?[0-9]?[0-9],[1-9]?[0-9]?[0-9],[1-9]?[0-9]?[0-9]"));
 }
 
-bool is_valid_bitmask(const std::string &bitmask_px, int min_width, int min_height) {
-  if (bitmask_px.empty() || !std::regex_match(bitmask_px, std::regex("[\\*_,]+"))) return false;
-  // TODO validate bitmask dimension
-  return true;
+void ValidateBitmask(const std::string &bitmask_px, int range_width, int range_height) {
+  if (bitmask_px.empty()) throw "Bitmask is empty";
+  if (bitmask_px.length() > range_width * range_height + range_height)
+    throw "Bitmask dimension must be smaller than scanning range.";
+  if (!std::regex_match(bitmask_px, std::regex("[\\*_,]+"))) throw "Valid bitmask to find is required.";
 }
 
-bool is_valid_numeric_tupel(std::string &str) {
+bool IsValidNumericTupel(std::string &str) {
   return !str.empty() && std::regex_match(str, std::regex("[1-9][0-9]*,[1-9][0-9]*"));
 }
 
-bool resolve_numeric_tupel(const std::string &str, int &number_1, int &number_2) {
-  if (str.empty() || !is_valid_numeric_tupel(const_cast<std::string &>(str))) return false;
+void ResolveNumericTupel(const std::string &str, int &number_1, int &number_2) {
+  if (str.empty() || !IsValidNumericTupel(const_cast<std::string &>(str))) throw "Valid from coordinate is required.";
 
   std::vector<std::string> fromCoordinate = helper::strings::Explode(str, ',');
 
   number_1 = helper::strings::ToInt(fromCoordinate.at(0), 0);
   number_2 = helper::strings::ToInt(fromCoordinate.at(1), 0);
 
-  return number_1 > 0 && number_2 > 0;
+
+  if (!(number_1 > 0 && number_2 > 0)) throw "Valid from coordinate is required.";
 }
 
-bool resolve_scanning_range(int mode_id, const std::string &range, int &range_x, int &range_y) {
-  if (!is_valid_range_for_mode(mode_id, range)) return false;
+void ResolveScanningRange(int mode_id, const std::string &range, int &range_x, int &range_y) {
+  if (!IsValidRangeForMode(mode_id, range)) throw "Valid scanning range is required.";
 
-  if (is_tupel_range_mode(mode_id)) {
-    resolve_numeric_tupel(range, range_x, range_y);
-    return range_x > 0 && range_y > 0;
+  if (IsTupelRangeMode(mode_id)) {
+    ResolveNumericTupel(range, range_x, range_y);
+    if (range_x < 0 && range_y < 0) throw "Scanning range must start >= 0,0.";
   }
-  if (is_horizontal_mode(mode_id)) {
+  if (IsHorizontalMode(mode_id)) {
     range_y = 1;
     range_x = helper::strings::ToInt(range, -1);
 
-    return range_x > 0;
+    if (range_x == 1) throw "Valid scanning range is required.";
   }
 
   range_x = 1;
   range_y = helper::strings::ToInt(range, -1);
 
-  return range_y > 0;
+  if (range_y == -1) throw "Valid scanning range is required.";
 }
 
-bool resolve_rgb_color(const std::string &color, int &red, int &green, int &blue) {
-  if (!is_valid_color(color)) return false;
+void ResolveRgbColor(const std::string &color, int &red, int &green, int &blue) {
+  if (!IsValidColor(color)) throw "Valid color is required.";
 
   std::vector<std::string> rgb = helper::strings::Explode(color, ',');
 
@@ -142,7 +147,7 @@ bool resolve_rgb_color(const std::string &color, int &red, int &green, int &blue
   green = helper::strings::ToInt(rgb.at(1), -1);
   blue = helper::strings::ToInt(rgb.at(2), -1);
 
-  return red > -1 && green > -1 && blue > -1;
+  if (red == -1 || green == -1 || blue == -1) throw "Valid color is required.";
 }
 } // namespace cli
 } // namespace pixloc
