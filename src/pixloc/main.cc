@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 
   bool show_help = false;
 
-  // Use clara cli options parser
+  // Use clara CLI options parser
   auto parser =
       Opt(mode, "mode")["-m"]["--mode"]("see usage examples for available modes").required() |
           Opt(from, "from")["-f"]["--from"]("starting coordinate").required() |
@@ -66,9 +66,9 @@ int main(int argc, char **argv) {
               "bitmask")["-b"]["--bitmask"]("pixel mask to find (* = given color, _ = other colors)").optional() |
           Opt(tolerance, "tolerance")["-t"]["--tolerance"]("optional: color tolerance").optional() |
           Help(show_help);
-  auto result = parser.parse(Args(argc, reinterpret_cast<const char *const *>(argv)));
-  if (!result) {
-    std::cerr << "Error in command line: " << result.errorMessage() << std::endl;
+  auto clara_result = parser.parse(Args(argc, reinterpret_cast<const char *const *>(argv)));
+  if (!clara_result) {
+    std::cerr << "Error in command line: " << clara_result.errorMessage() << std::endl;
     return 1;
   }
 
@@ -87,7 +87,6 @@ int main(int argc, char **argv) {
   unsigned short mode_id, amount_px = 1, color_tolerance = 0;
 
   int from_x = -1, from_y = -1,
-      mouse_x = -1, mouse_y = -1,
       range_x = -1, range_y = -1,
       red = -1, green = -1, blue = -1;
 
@@ -95,9 +94,7 @@ int main(int argc, char **argv) {
 
   try {
     display = XOpenDisplay(nullptr);
-    if (!display) {
-      throw "Failed to open default display.\n";
-    }
+    if (!display) throw "Failed to open default display.\n";
 
     mode_id = pixloc::clioptions::GetModeIdFromName(mode);
     is_trace_mode = pixloc::clioptions::IsTraceMode(mode_id);
@@ -109,22 +106,15 @@ int main(int argc, char **argv) {
       XQueryPointer(display, RootWindow(display, DefaultScreen(display)),
                     &event.xbutton.root, &event.xbutton.window,
                     &event.xbutton.x_root, &event.xbutton.y_root,
-                    &event.xbutton.x, &event.xbutton.y,
+                    &from_x, &from_y,
                     &event.xbutton.state);
-      mouse_x = static_cast<short>(event.xbutton.x);
-      mouse_y = static_cast<short>(event.xbutton.y);
-
       if (is_trace_mode) {
-        printf("x=%d; y=%d;\n", event.xbutton.x, event.xbutton.y);
+        printf("x=%d; y=%d;\n", from_x, from_y);
         if (mode_id==pixloc::clioptions::kModeIdTraceMouse) return 0;
       }
     }
 
-    if (use_mouse_for_from) {
-      from_x = mouse_x;
-      from_y = mouse_y;
-    } else pixloc::clioptions::ResolveNumericTupel(from, from_x, from_y);
-
+    if (!use_mouse_for_from) pixloc::clioptions::ResolveNumericTupel(from, from_x, from_y);
     if ((from_x != -1 && from_y != -1)) pixloc::clioptions::ResolveScanningRange(mode_id, range, range_x, range_y);
 
     // @TODO validate from_x + range_x and from_y + range_y against available display dimension
@@ -160,16 +150,13 @@ int main(int argc, char **argv) {
 
   if (mode_id == pixloc::clioptions::kModeIdTraceMainColor) {
     scanner->TraceMainColor();
-    return 0;
-  }
-
-  if (is_bitmask_mode) {
+  } else if (is_bitmask_mode) {
     if (is_trace_mode) scanner->TraceBitmask();
     else std::cout << scanner->FindBitmask(bitmask);
-    return 0;
+  } else {
+    int location = scanner->ScanUniaxial(amount_px, is_trace_mode);
+    if (!is_trace_mode) std::cout << (range_y < 2 ? "x:" : "y:" ) << location << ";";
   }
 
-  int location = scanner->ScanUniaxial(amount_px, is_trace_mode);
-  if (!is_trace_mode) std::cout << (range_y < 2 ? "x:" : "y:" ) << location << ";";
   return 0;
 }

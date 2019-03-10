@@ -51,7 +51,10 @@ unsigned short GetModeIdFromName(const std::string &mode) {
 }
 
 bool IsTupelRangeMode(int mode_id) {
-  return mode_id==kModeIdTraceBitmask || mode_id==kModeIdFindBitmask || mode_id==kModeIdTraceMainColor;
+  return
+      mode_id==kModeIdTraceBitmask ||
+      mode_id==kModeIdFindBitmask ||
+      mode_id==kModeIdTraceMainColor;
 }
 
 bool IsHorizontalMode(int mode_id) {
@@ -123,15 +126,17 @@ void ResolveScanningRange(int mode_id, const std::string &range, int &range_x, i
 
   if (IsTupelRangeMode(mode_id)) {
     ResolveNumericTupel(range, range_x, range_y);
-    if (range_x < 0 && range_y < 0) throw "Scanning range must start >= 0,0.";
+    if (range_x < 0 || range_y < 0) throw "Scanning range must start >= 0,0.";
+    return;
   }
   if (IsHorizontalMode(mode_id)) {
     range_y = 1;
     range_x = helper::strings::ToInt(range, -1);
 
-    if (range_x == 1) throw "Valid scanning range is required.";
+    if (range_x == -1) throw "Valid scanning range is required.";
+    return;
   }
-
+  // Vertical mode
   range_x = 1;
   range_y = helper::strings::ToInt(range, -1);
 
