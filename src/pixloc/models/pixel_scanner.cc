@@ -32,9 +32,7 @@
 
 namespace pixloc {
 
-/*
- * Constructor
- */
+// Constructor
 PixelScanner::PixelScanner(Display *display,
                            unsigned short x_start, unsigned short y_start,
                            unsigned short range_x, unsigned short range_y,

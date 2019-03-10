@@ -27,16 +27,15 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef CLASS_PIXLOC_COLOR_MATCHER_RANGE
-#define CLASS_PIXLOC_COLOR_MATCHER_RANGE
+#ifndef CLASS_PIXLOC_COLOR_MATCHER
+#define CLASS_PIXLOC_COLOR_MATCHER
 
 #include "color_matcher.h"
 
 namespace pixloc {
-/**
- * Color matcher (RGB range)
- */
+
 class ColorMatcher {
+
  public:
   // @see Xlib manual - https://www.x.org/releases/X11R7.7/doc/libX11/libX11/libX11.html#Color_Structures
   static const unsigned short kXColorMaxChannelValue = 65535;
@@ -57,6 +56,7 @@ class ColorMatcher {
   unsigned short CalculateChannelMin(unsigned short value, unsigned short tolerance);
   unsigned short CalculateChannelMax(unsigned short value, unsigned short tolerance);
 };
+
 } // namespace pixloc
 
-#endif //PIXLOC_COLOR_MATCHER_RGB_RANGE
+#endif //PIXLOC_COLOR_MATCHER

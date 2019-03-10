@@ -81,12 +81,6 @@ class PixelScanner {
 
   std::string FormatCoordinate(signed long offset_needle, unsigned short index_haystack_line) const;
 
-  inline void getRgbFromPixel(XColor *color,
-                       unsigned short y,
-                       unsigned short x,
-                       unsigned short &red,
-                       unsigned short &green,
-                       unsigned short &blue) const;
 }; // class Scanner
 } // namespace pixloc
 
