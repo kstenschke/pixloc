@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
   bool show_help = false;
 
   // Use clara CLI options parser
-  auto parser =
+  auto clara_parser =
       Opt(mode, "mode")["-m"]["--mode"]("see usage examples for available modes").required() |
           Opt(from, "from")["-f"]["--from"]("starting coordinate").required() |
           Opt(range, "range")["-r"]["--range"]("amount of pixels to be scanned").required() |
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
               "bitmask")["-b"]["--bitmask"]("pixel mask to find (* = given color, _ = other colors)").optional() |
           Opt(tolerance, "tolerance")["-t"]["--tolerance"]("optional: color tolerance").optional() |
           Help(show_help);
-  auto clara_result = parser.parse(Args(argc, reinterpret_cast<const char *const *>(argv)));
+  auto clara_result = clara_parser.parse(Args(argc, reinterpret_cast<const char *const *>(argv)));
   if (!clara_result) {
     std::cerr << "Error in command line: " << clara_result.errorMessage() << std::endl;
     return 1;
@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
     std::cout << "pixloc version " <<
               Pixloc_VERSION_MAJOR << "." << Pixloc_VERSION_MINOR << "\n"
                   "Copyright (c) 2019 Kay Stenschke\n\n";
-    parser.writeToStream(std::cout);
+    clara_parser.writeToStream(std::cout);
     std::cout << pixloc::clioptions::kUsageExamples;
     return 0;
   }
@@ -114,10 +114,10 @@ int main(int argc, char **argv) {
       }
     }
 
-    if (!use_mouse_for_from) pixloc::clioptions::ResolveNumericTupel(from, from_x, from_y);
-    if ((from_x != -1 && from_y != -1)) pixloc::clioptions::ResolveScanningRange(mode_id, range, range_x, range_y);
-
-    // @TODO validate from_x + range_x and from_y + range_y against available display dimension
+    if (!use_mouse_for_from && !helper::strings::ResolveNumericTupel(from, from_x, from_y))
+      throw "Valid from coordinate is required.";
+    pixloc::clioptions::ResolveScanningRange(mode_id, range, range_x, range_y);
+    pixloc::clioptions::ValidateScanningRectangle(from_x, from_y, range_x, range_y, display);
 
     if (pixloc::clioptions::ModeRequiresAmountPx(mode_id) &&
         (amount_px = static_cast<unsigned short>(helper::strings::ToInt(amount, 0)))==0)

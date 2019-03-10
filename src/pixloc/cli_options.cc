@@ -90,7 +90,7 @@ bool ModeRequiresColor(int mode_id) {
 
 bool IsValidRangeForMode(int mode_id, const std::string &range) {
   return IsTupelRangeMode(mode_id)
-         ? IsValidNumericTupel(const_cast<std::string &>(range))
+         ? helper::strings::IsValidNumericTupel(const_cast<std::string &>(range))
          : helper::strings::IsNumeric(range);
 }
 
@@ -105,27 +105,15 @@ void ValidateBitmask(const std::string &bitmask_px, int range_width, int range_h
   if (!std::regex_match(bitmask_px, std::regex("[\\*_,]+"))) throw "Valid bitmask to find is required.";
 }
 
-bool IsValidNumericTupel(std::string &str) {
-  return !str.empty() && std::regex_match(str, std::regex("[1-9][0-9]*,[1-9][0-9]*"));
-}
-
-void ResolveNumericTupel(const std::string &str, int &number_1, int &number_2) {
-  if (str.empty() || !IsValidNumericTupel(const_cast<std::string &>(str))) throw "Valid from coordinate is required.";
-
-  std::vector<std::string> fromCoordinate = helper::strings::Explode(str, ',');
-
-  number_1 = helper::strings::ToInt(fromCoordinate.at(0), 0);
-  number_2 = helper::strings::ToInt(fromCoordinate.at(1), 0);
-
-
-  if (!(number_1 > 0 && number_2 > 0)) throw "Valid from coordinate is required.";
-}
-
 void ResolveScanningRange(int mode_id, const std::string &range, int &range_x, int &range_y) {
-  if (!IsValidRangeForMode(mode_id, range)) throw "Valid scanning range is required.";
+  bool is_tupel_range_mode = IsTupelRangeMode(mode_id);
+  if (!IsValidRangeForMode(mode_id, range)) {
+    if (is_tupel_range_mode) throw "Valid scanning range tupel is required.";
+    throw "Valid scanning range value is required.";
+  }
 
-  if (IsTupelRangeMode(mode_id)) {
-    ResolveNumericTupel(range, range_x, range_y);
+  if (is_tupel_range_mode) {
+    if (!helper::strings::ResolveNumericTupel(range, range_x, range_y)) throw "Valid range tupel is required.";
     if (range_x < 0 || range_y < 0) throw "Scanning range must start >= 0,0.";
     return;
   }
@@ -133,14 +121,20 @@ void ResolveScanningRange(int mode_id, const std::string &range, int &range_x, i
     range_y = 1;
     range_x = helper::strings::ToInt(range, -1);
 
-    if (range_x == -1) throw "Valid scanning range is required.";
+    if (range_x == -1) throw "Valid scanning range value is required.";
     return;
   }
   // Vertical mode
   range_x = 1;
   range_y = helper::strings::ToInt(range, -1);
 
-  if (range_y == -1) throw "Valid scanning range is required.";
+  if (range_y == -1) throw "Valid scanning range value is required.";
+}
+
+void ValidateScanningRectangle(int from_x, int from_y, int range_x, int range_y, Display *display) {
+  Screen*  screen = DefaultScreenOfDisplay(display);
+  if (from_x + range_x > screen->width ||
+      from_y + range_y > screen->height) throw "Given scanning rectangle exceeds available screen size";
 }
 
 void ResolveRgbColor(const std::string &color, int &red, int &green, int &blue) {

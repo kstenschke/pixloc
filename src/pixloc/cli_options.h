@@ -75,18 +75,14 @@ bool IsTupelRangeMode(int mode_id);
 bool IsHorizontalMode(int mode_id);
 bool IsTraceMode(int mode_id);
 bool IsBitmaskMode(int mode_id);
-
-bool IsValidNumericTupel(std::string &str);
 bool IsValidColor(const std::string &color);
 void ValidateBitmask(const std::string &bitmask_px, int range_width, int range_height);
 bool IsValidRangeForMode(int mode_id, const std::string &range);
-
 bool ModeRequiresAmountPx(int mode_id);
 bool ModeRequiresBitmask(int mode_id);
 bool ModeRequiresColor(int mode_id);
-
-void ResolveNumericTupel(const std::string &str, int &number_1, int &number_2);
 void ResolveScanningRange(int mode_id, const std::string &range, int &number_1, int &number_2);
+void ValidateScanningRectangle(int from_x, int from_y, int range_x, int range_y, Display *display);
 void ResolveRgbColor(const std::string &color, int &red, int &green, int &blue);
 
 } // namespace clioptions

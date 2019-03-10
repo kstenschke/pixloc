@@ -38,6 +38,8 @@ namespace strings {
 extern std::vector<std::string> Explode(std::string const &str, char delimiter);
 extern bool IsNumeric(const std::string &str, bool allow_negative = false);
 extern int ToInt(std::string str, int defaultValue = 0);
+bool IsValidNumericTupel(std::string &str);
+bool ResolveNumericTupel(const std::string &str, int &number_1, int &number_2);
 std::string FindMostCommon(const std::vector<std::string> &vec);
 
 } // namespace strings

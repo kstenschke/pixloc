@@ -35,6 +35,7 @@
 #include <sstream>
 #include <iostream>
 #include <map>
+#include <regex>
 
 #include "helper_strings.h"
 
@@ -70,6 +71,21 @@ int ToInt(std::string str, int defaultValue) {
   return strings::IsNumeric(str)
          ? std::stoi(str)
          : defaultValue;
+}
+
+bool IsValidNumericTupel(std::string &str) {
+  return !str.empty() && std::regex_match(str, std::regex("[1-9][0-9]*,[1-9][0-9]*"));
+}
+
+bool ResolveNumericTupel(const std::string &str, int &number_1, int &number_2) {
+  if (str.empty() || !IsValidNumericTupel(const_cast<std::string &>(str))) return false;
+
+  std::vector<std::string> fromCoordinate = helper::strings::Explode(str, ',');
+
+  number_1 = helper::strings::ToInt(fromCoordinate.at(0), -1);
+  number_2 = helper::strings::ToInt(fromCoordinate.at(1), -1);
+
+  return number_1 >= 0 && number_2 >= 0;
 }
 
 std::string FindMostCommon(const std::vector<std::string> &vec) {
