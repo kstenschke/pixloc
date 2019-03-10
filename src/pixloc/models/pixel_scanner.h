@@ -45,10 +45,10 @@ class PixelScanner {
  public:
   // Constructor
   PixelScanner(Display *display,
-          unsigned short x_start, unsigned short y_start,
-          unsigned short range_x, unsigned short range_y,
-          unsigned short find_red, unsigned short find_green, unsigned short find_blue,
-          unsigned short tolerance);
+               unsigned short x_start, unsigned short y_start,
+               unsigned short range_x, unsigned short range_y,
+               unsigned short find_red, unsigned short find_green, unsigned short find_blue,
+               unsigned short tolerance);
 
   // Scan pixels on x or y axis, trace or find
   int ScanUniaxial(unsigned short amount_find, bool trace);
@@ -80,6 +80,13 @@ class PixelScanner {
                          std::string &haystack_line);
 
   std::string FormatCoordinate(signed long offset_needle, unsigned short index_haystack_line) const;
+
+  inline void getRgbFromPixel(XColor *color,
+                       unsigned short y,
+                       unsigned short x,
+                       unsigned short &red,
+                       unsigned short &green,
+                       unsigned short &blue) const;
 }; // class Scanner
 } // namespace pixloc
 

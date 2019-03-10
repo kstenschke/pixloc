@@ -63,7 +63,6 @@ PixelScanner::PixelScanner(Display *display,
 int PixelScanner::ScanUniaxial(unsigned short amount_find, bool trace) {
   auto *color = new XColor;
 
-  unsigned short red, green, blue;
   unsigned short amount_found = 0;
 
   for (unsigned short y = 0; y < range_y; ++y) {
@@ -71,13 +70,9 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, bool trace) {
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
-      red = color->red;
-      green = color->green;
-      blue = color->blue;
+      if (trace) std::cout << (color->red / 256) << "," << (color->green / 256) << "," << (color->blue / 256) << "\n";
 
-      if (trace) std::cout << (red / 256) << "," << (green / 256) << "," << (blue / 256) << "\n";
-
-      if (color_matcher->Matches(red, green, blue)) {
+      if (color_matcher->Matches(color->red, color->green, color->blue)) {
         ++amount_found;
         if (amount_found==amount_find) {
           XFree(image);
@@ -92,7 +87,6 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, bool trace) {
 
 void PixelScanner::TraceMainColor() {
   auto *color = new XColor;
-  int red, green, blue;
 
   std::vector<std::string> colors;
 
@@ -100,13 +94,8 @@ void PixelScanner::TraceMainColor() {
     for (unsigned short x = 0; x < range_x; ++x) {
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
-
-      red = color->red / 256;
-      green = color->green / 256;
-      blue = color->blue / 256;
-
       char rgb[12];
-      sprintf(rgb, "%d,%d,%d", red, green, blue);
+      sprintf(rgb, "%d,%d,%d", color->red / 256, color->green / 256, color->blue / 256);
       colors.emplace_back(rgb);
     }
   }
@@ -139,22 +128,17 @@ std::string PixelScanner::GetBitmaskLineFromImage(XColor *color, unsigned short 
 std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
   std::vector<std::string> needle_lines = helper::strings::Explode(bitmask_needle, ',');
 
+  unsigned short haystack_width = this->range_x - this->x_start;
   unsigned short amount_haystack_lines = this->range_y - this->y_start;
   std::vector<std::string> haystack_lines(amount_haystack_lines);
   // index to enable lazy-loading: next line that has to be grabbed
   unsigned short index_haystack_line_empty = 0;
-
-  unsigned short haystack_width = this->range_x - this->x_start;
-
   auto amount_needle_lines = static_cast<unsigned short>(needle_lines.size());
   auto needle_width = static_cast<unsigned short>(needle_lines[0].length());
-
   unsigned short last_possible_offset_per_haystack_line = haystack_width - needle_width;
   auto last_possible_occurrence_haystack_line =
       static_cast<unsigned short>(amount_haystack_lines - amount_needle_lines + 1);
-
   signed long offset_needle;
-
   unsigned short index_haystack_line;
   unsigned short index_needle_line;
   auto index_last_needle_line = static_cast<unsigned short>(needle_lines.size() - 1);
@@ -175,6 +159,7 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
                       index_haystack_line,
                       color,
                       haystack_line);
+    // Find 1st line of sought bitmask within current line of screenshot
     offset_needle = static_cast<signed short>(haystack_line.find(needle_lines[0], 0));
 
     while (true) {
@@ -185,13 +170,14 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
         break;
 
       if (amount_needle_lines==1) {
+        // Bitmask has only 1 line: found it
         XFree(image);
         return FormatCoordinate(offset_needle, index_haystack_line);
       }
 
       // Iterate down the lines of needle
       for (index_needle_line = 1; index_needle_line < amount_needle_lines; ++index_needle_line) {
-        // Check whether haystack line contains resp. needle line at rel. offset
+        // Check whether following haystack line contains resp. needle line at rel. offset
         needle_line = needle_lines[index_needle_line].c_str();
 
         index_haystack_line_compare = index_haystack_line + index_needle_line;

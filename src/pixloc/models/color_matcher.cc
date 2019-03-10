@@ -60,12 +60,9 @@ unsigned short ColorMatcher::CalculateChannelMax(unsigned short value, unsigned 
 
 bool ColorMatcher::Matches(unsigned short red, unsigned short green, unsigned short blue) {
   return
-      red >= this->red_min &&
-          red <= this->red_max &&
-          green >= this->green_min &&
-          green <= this->green_max &&
-          blue >= this->blue_min &&
-          blue <= this->blue_max;
+      red >= this->red_min && red <= this->red_max &&
+      green >= this->green_min && green <= this->green_max &&
+      blue >= this->blue_min && blue <= this->blue_max;
 }
 
 } // namespace pixloc
