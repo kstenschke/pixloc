@@ -58,7 +58,6 @@ class PixelScanner {
   void TraceBitmask();
 
   std::string FindBitmask(const std::string &bitmask);
-  virtual ~PixelScanner();
 
  private:
   Display *display;

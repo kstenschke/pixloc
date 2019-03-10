@@ -56,16 +56,6 @@ PixelScanner::PixelScanner(Display *display,
                           XYPixmap);
 };
 
-// Destructor
-PixelScanner::~PixelScanner() {
-  delete(color_matcher);
-
-  XFree(color);
-  delete(color);
-
-  delete(image);
-}
-
 // Scan (or trace) given line or column on screenshot image
 // Return x or y position where given RGB occurs in given amount of consecutive pixels,
 // Or return -1 if not found
