@@ -39,6 +39,7 @@ PixelScanner::PixelScanner(Display *display,
                            unsigned short find_red, unsigned short find_green, unsigned short find_blue,
                            unsigned short tolerance) {
   this->display = display;
+  this->color = new XColor();
 
   this->x_start = x_start;
   this->y_start = y_start;
@@ -54,6 +55,16 @@ PixelScanner::PixelScanner(Display *display,
                           AllPlanes,
                           XYPixmap);
 };
+
+// Destructor
+PixelScanner::~PixelScanner() {
+  delete(color_matcher);
+
+  XFree(color);
+  delete(color);
+
+  delete(image);
+}
 
 // Scan (or trace) given line or column on screenshot image
 // Return x or y position where given RGB occurs in given amount of consecutive pixels,
@@ -103,16 +114,16 @@ void PixelScanner::TraceMainColor() {
 }
 
 void PixelScanner::TraceBitmask() {
-  auto *color = new XColor;
   for (unsigned short y = 0; y < range_y; ++y) {
-    std::cout << this->GetBitmaskLineFromImage(color, y) << (y < range_y - 1 ? "," : "") << "\n";
+    std::cout << this->GetBitmaskLineFromImage(y) << (y < range_y - 1 ? "," : "") << "\n";
   }
 
   XFree(image);
 }
 
-std::string PixelScanner::GetBitmaskLineFromImage(XColor *color, unsigned short y) {
+std::string PixelScanner::GetBitmaskLineFromImage(unsigned short y) {
   std::string bitmask_haystack;
+
   for (unsigned short x = 0; x < this->range_x; ++x) {
     color->pixel = XGetPixel(this->image, x, y);
     XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
@@ -141,8 +152,6 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
   unsigned short index_needle_line;
   auto index_last_needle_line = static_cast<unsigned short>(needle_lines.size() - 1);
 
-  auto *color = new XColor;
-
   std::string haystack_line_compare;
   std::string needle_compare;
 
@@ -155,7 +164,6 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
     FetchHaystackLine(haystack_lines,
                       index_haystack_line_empty,
                       index_haystack_line,
-                      color,
                       haystack_line);
     // Find 1st line of sought bitmask within current line of screenshot
     offset_needle = static_cast<signed short>(haystack_line.find(needle_lines[0], 0));
@@ -185,7 +193,6 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
         FetchHaystackLine(haystack_lines,
                           index_haystack_line_empty,
                           index_haystack_line_compare,
-                          color,
                           haystack_line_compare);
         needle_compare = haystack_line_compare.substr(static_cast<unsigned long>(offset_needle), needle_width);
 
@@ -217,12 +224,11 @@ std::string PixelScanner::FindBitmask(const std::string &bitmask_needle) {
 void PixelScanner::FetchHaystackLine(std::vector<std::string> &haystack_lines,
                                      unsigned short &index_empty_haystack_line,
                                      unsigned short index_haystack_line,
-                                     XColor *color,
                                      std::string &haystack_line) {
   if (index_empty_haystack_line > index_haystack_line) {
     haystack_line = haystack_lines.at(index_haystack_line);
   } else {
-    haystack_line = this->GetBitmaskLineFromImage(color, index_haystack_line);
+    haystack_line = this->GetBitmaskLineFromImage(index_haystack_line);
     haystack_lines.at(index_haystack_line) = haystack_line;
     index_empty_haystack_line = static_cast<unsigned short>(index_haystack_line + 1);
   }

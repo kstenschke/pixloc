@@ -58,10 +58,12 @@ class PixelScanner {
   void TraceBitmask();
 
   std::string FindBitmask(const std::string &bitmask);
+  virtual ~PixelScanner();
 
  private:
   Display *display;
   XImage *image;
+  XColor *color;
 
   unsigned short x_start;
   unsigned short y_start;
@@ -70,13 +72,12 @@ class PixelScanner {
 
   ColorMatcher *color_matcher;
 
-  std::string GetBitmaskLineFromImage(XColor *color, unsigned short y);
+  std::string GetBitmaskLineFromImage(unsigned short y);
 
   // Get line from bitmask haystack. this is lazy-loaded: initialize it via GetBitmaskLineFromImage if not yet
   void FetchHaystackLine(std::vector<std::string> &haystack_lines,
                          unsigned short &index_empty_haystack_line,
                          unsigned short index_haystack_line,
-                         XColor *color,
                          std::string &haystack_line);
 
   std::string FormatCoordinate(signed long offset_needle, unsigned short index_haystack_line) const;
