@@ -51,7 +51,7 @@ class PixelScanner {
                unsigned short tolerance);
 
   // Scan pixels on x or y axis, trace or find
-  int ScanUniaxial(unsigned short amount_find, bool trace);
+  int ScanUniaxial(unsigned short amount_find, unsigned short step_size, bool trace);
 
   void TraceMainColor();
 
@@ -71,6 +71,8 @@ class PixelScanner {
 
   ColorMatcher *color_matcher;
 
+  void InitUniaxialStepSize(unsigned short step_size, unsigned short &step_size_x, unsigned short &step_size_y) const;
+
   std::string GetBitmaskLineFromImage(unsigned short y);
 
   // Get line from bitmask haystack. this is lazy-loaded: initialize it via GetBitmaskLineFromImage if not yet
@@ -80,7 +82,6 @@ class PixelScanner {
                          std::string &haystack_line);
 
   std::string FormatCoordinate(signed long offset_needle, unsigned short index_haystack_line) const;
-
 }; // class Scanner
 } // namespace pixloc
 

@@ -59,13 +59,15 @@ PixelScanner::PixelScanner(Display *display,
 // Scan (or trace) given line or column on screenshot image
 // Return x or y position where given RGB occurs in given amount of consecutive pixels,
 // Or return -1 if not found
-int PixelScanner::ScanUniaxial(unsigned short amount_find, bool trace) {
+int PixelScanner::ScanUniaxial(unsigned short amount_find, unsigned short step_size, bool trace) {
   auto *color = new XColor;
 
-  unsigned short amount_found = 0;
+  unsigned short step_size_x, step_size_y;
+  InitUniaxialStepSize(step_size, step_size_x, step_size_y);
 
-  for (unsigned short y = 0; y < range_y; ++y) {
-    for (unsigned short x = 0; x < range_x; ++x) {
+  unsigned short amount_found = 0;
+  for (unsigned short y = 0; y < range_y; y += step_size_y) {
+    for (unsigned short x = 0; x < range_x; x += step_size_x) {
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
@@ -82,6 +84,17 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, bool trace) {
   }
   XFree(image);
   return -1;
+}
+void PixelScanner::InitUniaxialStepSize(unsigned short step_size,
+                                        unsigned short &step_size_x,
+                                        unsigned short &step_size_y) const {
+  if (range_x > 1) {
+    step_size_y = 1;
+    step_size_x = step_size;
+  } else {
+    step_size_x = 1;
+    step_size_y = step_size;
+  }
 }
 
 void PixelScanner::TraceMainColor() {

@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
   std::string amount;
   std::string bitmask;
   std::string tolerance;
+  std::string step;
 
   bool show_help = false;
 
@@ -65,6 +66,7 @@ int main(int argc, char **argv) {
           Opt(bitmask,
               "bitmask")["-b"]["--bitmask"]("pixel mask to find (* = given color, _ = other colors)").optional() |
           Opt(tolerance, "tolerance")["-t"]["--tolerance"]("optional: color tolerance").optional() |
+          Opt(step, "step")["-s"]["--step"]("optional: interval step size of horizontal/vertical find mode").optional() |
           Help(show_help);
   auto clara_result = clara_parser.parse(Args(argc, reinterpret_cast<const char *const *>(argv)));
   if (!clara_result) {
@@ -84,7 +86,7 @@ int main(int argc, char **argv) {
   // Resolve options
   Display *display;
 
-  unsigned short mode_id, amount_px = 1, color_tolerance = 0;
+  unsigned short mode_id, amount_px = 1, color_tolerance = 0, step_size = 1;
 
   int from_x = -1, from_y = -1,
       range_x = -1, range_y = -1,
@@ -133,6 +135,12 @@ int main(int argc, char **argv) {
       if (!helper::strings::IsNumeric(tolerance)) throw "Invalid color tolerance value given.";
       color_tolerance = static_cast<unsigned short>(helper::strings::ToInt(tolerance, 0));
     }
+    if (!step.empty()) {
+      if (!helper::strings::IsNumeric(step)) throw "Invalid step size given.";
+      step_size = static_cast<unsigned short>(helper::strings::ToInt(step, 1));
+      if (step_size < 1) step_size = 1;
+      if (step_size > ((range_x > 1) ? range_x : range_y)) throw "Step size exceeds range.";
+    }
   } catch (char const *exception) {
     std::cerr << "Error: " << exception << "\nFor help run: pixloc -h\n\n";
     return -1;
@@ -154,7 +162,7 @@ int main(int argc, char **argv) {
     if (is_trace_mode) scanner->TraceBitmask();
     else std::cout << scanner->FindBitmask(bitmask);
   } else {
-    int location = scanner->ScanUniaxial(amount_px, is_trace_mode);
+    int location = scanner->ScanUniaxial(amount_px, step_size, is_trace_mode);
     if (!is_trace_mode) std::cout << (range_y < 2 ? "x:" : "y:" ) << location << ";";
   }
 
