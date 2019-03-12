@@ -71,13 +71,28 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, unsigned short step_s
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
-      if (trace) std::cout << (color->red / 256) << "," << (color->green / 256) << "," << (color->blue / 256) << "\n";
-
-      if (color_matcher->Matches(color->red, color->green, color->blue)) {
-        ++amount_found;
-        if (amount_found==amount_find) {
-          XFree(image);
-          return range_y==1 ? x : y;
+      if (trace)
+        std::cout << (color->red/256) << "," << (color->green/256) << "," << (color->blue/256) << "\n";
+      else if (color_matcher->Matches(color->red, color->green, color->blue)) {
+        if (step_size==1) {
+          // Found matching pixel while scanning with frequency of 1 pixel
+          ++amount_found;
+          if (amount_found==amount_find) {
+            XFree(image);
+            return range_y==1 ? x : y;
+          }
+        } else {
+          // Found 1 matching pixel while interval scanning, now scan directly neighbouring pixels
+          unsigned short amount_equi_colored_neighbours_before =
+              GetAmountEquiColoredNeighboursAfter(x, y, amount_find);
+          if (amount_equi_colored_neighbours_before >= amount_find) {
+            XFree(image);
+            return range_y==1
+                   ? x - amount_equi_colored_neighbours_before
+                   : y - amount_equi_colored_neighbours_before;
+          } else {
+            // @todo scan neighbouring pixels after finding place
+          }
         }
       } else amount_found = 0;
     }
@@ -85,6 +100,32 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, unsigned short step_s
   XFree(image);
   return -1;
 }
+
+unsigned short PixelScanner::GetAmountEquiColoredNeighboursAfter(
+    unsigned short x_start,
+    unsigned short y_start,
+    unsigned short amount_find
+) {
+  auto *color = new XColor;
+  unsigned short amount_found = 0;
+  for (unsigned short y = y_start; y < y_start + amount_find; ++y) {
+    for (unsigned short x = x_start; x < x_start + amount_find; ++x) {
+      color->pixel = XGetPixel(image, x, y);
+      XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
+
+      if (color_matcher->Matches(color->red, color->green, color->blue)) {
+        ++amount_found;
+        if (amount_found==amount_find) {
+          XFree(image);
+          return range_y==1 ? x : y;
+        }
+      } else if (amount_found > 0) return amount_found;
+    }
+  }
+
+  return 1;
+}
+
 void PixelScanner::InitUniaxialStepSize(unsigned short step_size,
                                         unsigned short &step_size_x,
                                         unsigned short &step_size_y) const {
@@ -107,7 +148,7 @@ void PixelScanner::TraceMainColor() {
       color->pixel = XGetPixel(image, x, y);
       XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
       char rgb[12];
-      sprintf(rgb, "%d,%d,%d", color->red / 256, color->green / 256, color->blue / 256);
+      sprintf(rgb, "%d,%d,%d", color->red/256, color->green/256, color->blue/256);
       colors.emplace_back(rgb);
     }
   }
@@ -238,8 +279,8 @@ void PixelScanner::FetchHaystackLine(std::vector<std::string> &haystack_lines,
 }
 
 std::string PixelScanner::FormatCoordinate(signed long offset_needle, unsigned short index_haystack_line) const {
-  return "cx=" + std::to_string(x_start + offset_needle - 1) +
-      "; cy=" + std::to_string(y_start + index_haystack_line - 1) + ";\n";
+  return "x=" + std::to_string(x_start + offset_needle - 1) +
+      "; y=" + std::to_string(y_start + index_haystack_line - 1) + ";\n";
 }
 
 } // namespace pixloc

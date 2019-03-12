@@ -57,7 +57,7 @@ pixloc options
 
 #### Tolerance Option: Matching within a color range
 
-Using the optional *tolerance* option, color ranges are used to detect matching pixels.  
+With the optional *tolerance* argument, matching pixels are detected within a color range.
 By default, a zero-tolerance is used.
 
 Example: Looking for pixels of RGB color 150,10,200 with a tolerance of 5, will match pixels within the following RGB value range:
@@ -109,6 +109,18 @@ Scans pixels starting from the specified coordinate, iterating on the x or y axi
 offset (x or y value) of the first found occurrence of a set of consecutive pixels of the specified color. 
 If no such consecutive homochromatic set of pixels is found, the output is 
 ```x=-1;``` / ```y=-1;```.
+
+
+#### Faster uniaxial scanning with (optional) *step* argument
+
+```bash
+pixloc -m "find vertical" -f 1,1 -r 100 -c 188,188,188 -a 4 -s 12
+```
+
+Scans pixels starting from 1,1 down, iterating in steps of 12 pixels.
+From each found matching pixel, pixloc than scans the directly neighbouring pixels up and down from that coordinate,
+checking for a homochromatic set of the given color, spanning the given amount of pixels.
+The topmost y value of the color (or color range) sought after, is being output. 
 
 
 ### Find a 1-bit pixel bitmask within a specified screen area
