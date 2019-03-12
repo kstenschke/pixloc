@@ -83,15 +83,10 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, unsigned short step_s
           }
         } else {
           // Found 1 matching pixel while interval scanning, now scan directly neighbouring pixels
-          unsigned short amount_equi_colored_neighbours_before =
-              GetAmountEquiColoredNeighboursAfter(x, y, amount_find);
-          if (amount_equi_colored_neighbours_before >= amount_find) {
+          signed short starting_value = GetStartingValueOfHomochromaticSetAtCoordinate(x, y, amount_find);
+          if (starting_value > -1) {
             XFree(image);
-            return range_y==1
-                   ? x - amount_equi_colored_neighbours_before
-                   : y - amount_equi_colored_neighbours_before;
-          } else {
-            // @todo scan neighbouring pixels after finding place
+            return starting_value;
           }
         }
       } else amount_found = 0;
@@ -101,29 +96,78 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, unsigned short step_s
   return -1;
 }
 
-unsigned short PixelScanner::GetAmountEquiColoredNeighboursAfter(
+signed short PixelScanner::GetStartingValueOfHomochromaticSetAtCoordinate(
     unsigned short x_start,
     unsigned short y_start,
     unsigned short amount_find
 ) {
   auto *color = new XColor;
-  unsigned short amount_found = 0;
-  for (unsigned short y = y_start; y < y_start + amount_find; ++y) {
-    for (unsigned short x = x_start; x < x_start + amount_find; ++x) {
-      color->pixel = XGetPixel(image, x, y);
-      XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
 
+  unsigned short topmost_matching_y = y_start;
+  unsigned short leftmost_matching_x = x_start;
+
+  unsigned short amount_found = 0;
+  if (range_y > range_x) {
+    // Scan vertical
+    for (unsigned short offset_y = 1; offset_y < amount_found; ++offset_y) {
+      // 1. Scan from starting y up, until y == 0 or sought amount was found or a not-matching pixel reached
+      if (y_start - offset_y < 0) break;
+      color->pixel = XGetPixel(image, x_start, y_start - offset_y);
+      XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
+      if (color_matcher->Matches(color->red, color->green, color->blue)) {
+        topmost_matching_y = y_start - offset_y;
+        ++amount_found;
+        if (amount_found==amount_find) {
+          XFree(image);
+          return topmost_matching_y;
+        }
+      } else break;
+    }
+    for (unsigned short offset_y = 1; offset_y < amount_found; ++offset_y) {
+      // 2. Scan from starting y down, until y >= range or sought amount was found or a not-matching pixel reached
+      if (y_start + offset_y > range_y) break;
+      color->pixel = XGetPixel(image, x_start, y_start + offset_y);
+      XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
       if (color_matcher->Matches(color->red, color->green, color->blue)) {
         ++amount_found;
         if (amount_found==amount_find) {
           XFree(image);
-          return range_y==1 ? x : y;
+          return topmost_matching_y;
         }
-      } else if (amount_found > 0) return amount_found;
+      } else break;
+    }
+  } else {
+    // Scan horizontal
+    for (unsigned short offset_x = 1; offset_x < amount_find; ++offset_x) {
+      // 1. Scan from starting x to the left, until x == 0 or sought amount was found or a not-matching pixel reached
+      if (x_start - offset_x < 0) break;
+      color->pixel = XGetPixel(image, x_start - offset_x, y_start);
+      XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
+      if (color_matcher->Matches(color->red, color->green, color->blue)) {
+        leftmost_matching_x = x_start - offset_x;
+        ++amount_found;
+        if (amount_found==amount_find) {
+          XFree(image);
+          return leftmost_matching_x;
+        }
+      } else break;
+    }
+    for (unsigned short offset_x = 1; offset_x < amount_found; ++offset_x) {
+      // 2. Scan from starting x to the right, until x >= range or sought amount was found or a not-matching pixel reached
+      if (x_start + offset_x > range_x) break;
+      color->pixel = XGetPixel(image, x_start + offset_x, y_start);
+      XQueryColor(display, DefaultColormap(display, DefaultScreen(display)), color);
+      if (color_matcher->Matches(color->red, color->green, color->blue)) {
+        ++amount_found;
+        if (amount_found==amount_find) {
+          XFree(image);
+          return leftmost_matching_x;
+        }
+      } else break;
     }
   }
 
-  return 1;
+  return -1;
 }
 
 void PixelScanner::InitUniaxialStepSize(unsigned short step_size,

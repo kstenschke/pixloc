@@ -73,7 +73,9 @@ class PixelScanner {
 
   void InitUniaxialStepSize(unsigned short step_size, unsigned short &step_size_x, unsigned short &step_size_y) const;
 
-  unsigned short GetAmountEquiColoredNeighboursAfter(unsigned short x, unsigned short y, unsigned short amount_find);
+  signed short GetStartingValueOfHomochromaticSetAtCoordinate(unsigned short x,
+                                                              unsigned short y,
+                                                              unsigned short amount_find);
 
   std::string GetBitmaskLineFromImage(unsigned short y);
 
