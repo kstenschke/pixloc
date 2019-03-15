@@ -27,7 +27,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "color_matcher.h"
+#include "color-matcher.h"
 
 namespace pixloc {
 

@@ -29,8 +29,8 @@
 
 #include <regex>
 
-#include "cli_options.h"
-#include "pixloc/helper/helper_strings.h"
+#include "cli-options.h"
+#include "pixloc/helper/strings.h"
 
 namespace pixloc {
 namespace clioptions {

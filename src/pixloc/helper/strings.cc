@@ -37,7 +37,7 @@
 #include <map>
 #include <regex>
 
-#include "helper_strings.h"
+#include "strings.h"
 
 namespace helper {
 namespace strings {

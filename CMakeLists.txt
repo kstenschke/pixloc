@@ -26,10 +26,10 @@ include_directories(
 
 add_executable(pixloc
         src/pixloc/main.cc
-        src/pixloc/cli_options.cc
-        src/pixloc/helper/helper_strings.cc
-        src/pixloc/models/color_matcher.cc
-        src/pixloc/models/pixel_scanner.cc
+        src/pixloc/cli-options.cc
+        src/pixloc/helper/strings.cc
+        src/pixloc/models/color-matcher.cc
+        src/pixloc/models/pixel-scanner.cc
         src/pixloc/config.h)
 
 target_link_libraries(pixloc ${X11_LIBRARIES})

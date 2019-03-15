@@ -37,7 +37,7 @@
 #include <iostream>
 #include <vector>
 
-#include "pixloc/models/color_matcher.h"
+#include "pixloc/models/color-matcher.h"
 
 namespace pixloc {
 class PixelScanner {
