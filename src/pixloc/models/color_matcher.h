@@ -30,7 +30,7 @@
 #ifndef CLASS_PIXLOC_COLOR_MATCHER
 #define CLASS_PIXLOC_COLOR_MATCHER
 
-#include "color-matcher.h"
+#include "color_matcher.h"
 
 namespace pixloc {
 

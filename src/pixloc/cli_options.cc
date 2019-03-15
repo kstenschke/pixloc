@@ -29,7 +29,7 @@
 
 #include <regex>
 
-#include "cli-options.h"
+#include "cli_options.h"
 #include "pixloc/helper/strings.h"
 
 namespace pixloc {

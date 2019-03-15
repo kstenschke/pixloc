@@ -27,7 +27,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "pixel-scanner.h"
+#include "pixel_scanner.h"
 #include "pixloc/helper/strings.h"
 
 namespace pixloc {

@@ -42,17 +42,17 @@ pixloc options
 
 ### Options
 
-| Option         | Description                                            | Value                                      |
-|----------------|--------------------------------------------------------|--------------------------------------------|
-|-m, --mode      | Mode of tracing or locating pixels by color            | See details under [Modes](#modes)          |
-|-f, --from      | Starting coordinate                                    | X or y value or x,y coordinate. Or "mouse" |
-|-r, --range     | Amount of pixels to be scanned                         | Number                                     |
-|-c, --color     | RGB color value to find                                | Red,green,blue (decimal) values            |
-|-a, --amount    | Amount of consecutive pixels of given color to find    | Number                                     |
-|-b, --bitmask   | Pixel mask (* = given color, _ = other colors) to find | Bitmask, * = given color, _ = other colors |
-|-t, --tolerance | Optional: Color tolerance amount                       | Number                                     |
-|-s, --step      | Optional: Interval step size for non-bitmask modes     | Number                                     |
-|-?, -h, --help  | Display usage information                              | -                                          |
+| Option          | Description                                            | Value                                      |
+|-----------------|--------------------------------------------------------|--------------------------------------------|
+| -m, --mode      | Mode of tracing or locating pixels by color            | See details under [Modes](#modes)          |
+| -f, --from      | Starting coordinate                                    | X or y value or x,y coordinate. Or "mouse" |
+| -r, --range     | Amount of pixels to be scanned                         | Number                                     |
+| -c, --color     | RGB color value to find                                | Red,green,blue (decimal) values            |
+| -a, --amount    | Amount of consecutive pixels of given color to find    | Number                                     |
+| -b, --bitmask   | Pixel mask (* = given color, _ = other colors) to find | Bitmask, * = given color, _ = other colors |
+| -t, --tolerance | Optional: Color tolerance amount                       | Number                                     |
+| -s, --step      | Optional: Interval step size for non-bitmask modes     | Number                                     |
+| -?, -h, --help  | Display usage information                              | -                                          |
 
 
 #### Tolerance Option: Matching within a color range

@@ -35,8 +35,8 @@
 #include "config.h"
 #include "external/clara.hpp"
 #include "pixloc/helper/strings.h"
-#include "cli-options.h"
-#include "pixloc/models/pixel-scanner.h"
+#include "cli_options.h"
+#include "pixloc/models/pixel_scanner.h"
 
 using namespace clara;
 
