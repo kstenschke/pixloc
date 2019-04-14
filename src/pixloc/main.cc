@@ -166,5 +166,7 @@ int main(int argc, char **argv) {
     if (!is_trace_mode) std::cout << (range_y < 2 ? "x:" : "y:" ) << location << ";";
   }
 
+  delete scanner;
+
   return 0;
 }

@@ -56,6 +56,12 @@ PixelScanner::PixelScanner(Display *display,
                           XYPixmap);
 };
 
+// Destructor
+PixelScanner::~PixelScanner() {
+  delete this->color;
+  delete this->color_matcher;
+}
+
 // Scan (or trace) given line or column on screenshot image
 // Return x or y position where given RGB occurs in given amount of consecutive pixels,
 // Or return -1 if not found
@@ -79,6 +85,8 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, unsigned short step_s
           ++amount_found;
           if (amount_found==amount_find) {
             XFree(image);
+            delete color;
+
             return range_y==1 ? x : y;
           }
         } else {
@@ -86,13 +94,18 @@ int PixelScanner::ScanUniaxial(unsigned short amount_find, unsigned short step_s
           signed short starting_value = GetStartingValueOfHomochromaticSetAtCoordinate(x, y, amount_find);
           if (starting_value > -1) {
             XFree(image);
+            delete color;
+
             return starting_value;
           }
         }
       } else amount_found = 0;
     }
   }
+
   XFree(image);
+  delete color;
+
   return -1;
 }
 
@@ -119,6 +132,8 @@ signed short PixelScanner::GetStartingValueOfHomochromaticSetAtCoordinate(
         ++amount_found;
         if (amount_found==amount_find) {
           XFree(image);
+          delete color;
+
           return topmost_matching_y;
         }
       } else break;
@@ -132,6 +147,8 @@ signed short PixelScanner::GetStartingValueOfHomochromaticSetAtCoordinate(
         ++amount_found;
         if (amount_found==amount_find) {
           XFree(image);
+          delete color;
+
           return topmost_matching_y;
         }
       } else break;
@@ -148,6 +165,8 @@ signed short PixelScanner::GetStartingValueOfHomochromaticSetAtCoordinate(
         ++amount_found;
         if (amount_found==amount_find) {
           XFree(image);
+          delete color;
+
           return leftmost_matching_x;
         }
       } else break;
@@ -161,6 +180,8 @@ signed short PixelScanner::GetStartingValueOfHomochromaticSetAtCoordinate(
         ++amount_found;
         if (amount_found==amount_find) {
           XFree(image);
+          delete color;
+
           return leftmost_matching_x;
         }
       } else break;
@@ -196,7 +217,9 @@ void PixelScanner::TraceMainColor() {
       colors.emplace_back(rgb);
     }
   }
+
   XFree(image);
+  delete color;
 
   std::cout << helper::strings::FindMostCommon(colors);
 }
